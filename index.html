@@ -62,7 +62,7 @@ const firebaseConfig = { apiKey: "AIzaSyClrBlIOGz-LtuaPlynY75aIKUgUWN8LRY", auth
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(); const db=firebase.database();
 
-// ===== অ্যাডমিন - আপনার Gmail বসানো আছে =====
+// ===== অ্যাডমিন - আপনার সঠিক Gmail =====
 const ADMIN_EMAILS = ["sabbirahmed12sn@gmail.com"];
 function isAdmin(){
   const u = auth.currentUser;
@@ -109,7 +109,6 @@ function renderServicePage(){
     let safePhone=(p.phone||"").replace(/[^0-9]/g,"");
     let callLink="tel:"+safePhone;
     let waLink="https://wa.me/88"+safePhone;
-    // ডিলিট বাটন এখন সবার দেখা যাবে, কিন্তু কাজ করবে শুধু অ্যাডমিনের
     let delBtn = '<button class="btn b1" onclick="deleteProvider(\''+p.fbId+'\')" style="padding:8px 12px;background:#ffebee;color:#d32f2f">🗑️ ডিলিট</button>';
     html+='<div class="card" style="flex-direction:column;align-items:stretch"><div style="display:flex;gap:10px;align-items:center"><div class="avatar">'+ini+'</div><div style="flex:1"><b>'+p.name+'</b><br><small>📍 '+p.address+'</small><br><small>📞 '+p.phone+'</small></div></div><div style="background:#f5f7fb;border-radius:12px;padding:10px;margin-top:8px;font-size:13px">'+(p.details||"বিবরণ নাই")+'</div><div style="display:flex;gap:8px;margin-top:12px"><a href="'+callLink+'" style="flex:1;text-decoration:none"><button class="btn b2" style="width:100%">📞 কল করুন</button></a><a href="'+waLink+'" target="_blank" style="flex:1;text-decoration:none"><button class="btn b1" style="width:100%">💬 WhatsApp</button></a>'+delBtn+'</div></div>';
   }
@@ -122,12 +121,12 @@ db.ref("providers").on("value",(snap)=>{
 });
 function deleteProvider(fbId){
   if(!auth.currentUser){
-    alert("ডিলিট করতে আগে লগইন করতে হবে। উপরে L বাটনে চাপ দিয়ে sabbirahmedsn12@gmail.com দিয়ে লগইন করেন");
+    alert("ডিলিট করতে আগে লগইন করতে হবে। উপরে L বাটনে চাপ দিয়ে sabbirahmed12sn@gmail.com দিয়ে লগইন করেন");
     goPage("login");
     return;
   }
   if(!isAdmin()){
-    alert("শুধু অ্যাডমিন ডিলিট করতে পারবে। আপনি লগইন করছেন: " + auth.currentUser.email + " | অ্যাডমিন হলো: sabbirahmedsn12@gmail.com");
+    alert("শুধু অ্যাডমিন ডিলিট করতে পারবে। আপনি লগইন করছেন: " + auth.currentUser.email + " | অ্যাডমিন হলো: sabbirahmed12sn@gmail.com");
     return;
   }
   if(!confirm("আপনি কি সত্যিই এই সেবাটি ডিলিট করতে চান?")){
