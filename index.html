@@ -62,11 +62,13 @@ const firebaseConfig = { apiKey: "AIzaSyClrBlIOGz-LtuaPlynY75aIKUgUWN8LRY", auth
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(); const db=firebase.database();
 
-// ===== ফাইনাল অ্যাডমিন Gmail : sn12 =====
+// ===== অ্যাডমিন এখন UID দিয়ে - Gmail লাগবে না =====
+const ADMIN_UIDS = ["WZxAEADlphY2oRlioV9douWle5I3"];
 const ADMIN_EMAILS = ["sabbirahmedsn12@gmail.com"];
 function isAdmin(){
   const u = auth.currentUser;
   if(!u) return false;
+  if(ADMIN_UIDS.includes(u.uid)) return true;
   if(u.email && ADMIN_EMAILS.includes(u.email.toLowerCase())) return true;
   return false;
 }
@@ -126,12 +128,8 @@ function deleteProvider(fbId){
     goPage("login");
     return;
   }
-  if(!u.email){
-    alert("আপনার Gmail পাওয়া যাচ্ছে না (null)। দয়া করে লগআউট করে আবার sabbirahmedsn12@gmail.com দিয়ে লগইন করেন। আপনার UID: " + u.uid);
-    return;
-  }
   if(!isAdmin()){
-    alert("শুধু অ্যাডমিন ডিলিট করতে পারবে। আপনি লগইন করছেন: " + u.email + " | অ্যাডমিন হলো: sabbirahmedsn12@gmail.com");
+    alert("শুধু অ্যাডমিন ডিলিট করতে পারবে। আপনার UID: " + u.uid);
     return;
   }
   if(!confirm("আপনি কি সত্যিই এই সেবাটি ডিলিট করতে চান?")) return;
@@ -159,8 +157,8 @@ auth.onAuthStateChanged(u=>{
     let hp=$("headerProfilePic"); hp.style.display="grid"; hp.textContent=(u.displayName||"P").charAt(0).toUpperCase();
     $("profilePic").src=u.photoURL||"https://i.pravatar.cc/200?u="+u.uid;
     $("profileNameText").textContent=u.displayName||"User";
-    $("pName").value=u.displayName||""; $("pEmail").value=u.email||"Gmail পাওয়া যায়নি - আবার লগইন করেন";
-    $("myUidBox").textContent = "আপনার Gmail: " + (u.email || "null") + " | UID: " + u.uid;
+    $("pName").value=u.displayName||""; $("pEmail").value=u.email||"Gmail পাওয়া যায়নি";
+    $("myUidBox").textContent = "আপনার UID: " + u.uid + " | Gmail: " + (u.email || "null");
   } else {
     $("myUidBox").textContent = "";
   }
