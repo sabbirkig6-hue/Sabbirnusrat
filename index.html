@@ -61,7 +61,9 @@
 const firebaseConfig = { apiKey: "AIzaSyClrBlIOGz-LtuaPlynY75aIKUgUWN8LRY", authDomain: "pathsathi-62d84.firebaseapp.com", databaseURL: "https://pathsathi-62d84-default-rtdb.firebaseio.com", projectId: "pathsathi-62d84", storageBucket: "pathsathi-62d84.firebasestorage.app", messagingSenderId: "1078248903889", appId: "1:1078248903889:web:310b9ef221bccfeeaf61f0" };
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(); const db=firebase.database();
-const ADMIN_EMAILS = ["sabbirahmed12sn@gmail.com"];
+
+// ===== ফাইনাল অ্যাডমিন Gmail : sn12 =====
+const ADMIN_EMAILS = ["sabbirahmedsn12@gmail.com"];
 function isAdmin(){
   const u = auth.currentUser;
   if(!u) return false;
@@ -125,11 +127,11 @@ function deleteProvider(fbId){
     return;
   }
   if(!u.email){
-    alert("আপনার Gmail পাওয়া যাচ্ছে না (null)। দয়া করে লগআউট করে আবার sabbirahmed12sn@gmail.com দিয়ে লগইন করেন। আপনার UID: " + u.uid);
+    alert("আপনার Gmail পাওয়া যাচ্ছে না (null)। দয়া করে লগআউট করে আবার sabbirahmedsn12@gmail.com দিয়ে লগইন করেন। আপনার UID: " + u.uid);
     return;
   }
   if(!isAdmin()){
-    alert("শুধু অ্যাডমিন ডিলিট করতে পারবে। আপনি লগইন করছেন: " + u.email + " | অ্যাডমিন হলো: sabbirahmed12sn@gmail.com");
+    alert("শুধু অ্যাডমিন ডিলিট করতে পারবে। আপনি লগইন করছেন: " + u.email + " | অ্যাডমিন হলো: sabbirahmedsn12@gmail.com");
     return;
   }
   if(!confirm("আপনি কি সত্যিই এই সেবাটি ডিলিট করতে চান?")) return;
