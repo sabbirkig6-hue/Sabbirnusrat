@@ -62,24 +62,14 @@ const firebaseConfig = { apiKey: "AIzaSyClrBlIOGz-LtuaPlynY75aIKUgUWN8LRY", auth
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(); const db=firebase.database();
 
-// ======= এখানে আপনার Gmail বসান =======
-const ADMIN_EMAILS = ["sabbirahmedsn12@gmail.com"]; // যেমন: ["charkhai@gmail.com"]
-// =======================================
-
+// ===== অ্যাডমিন - আপনার Gmail বসানো আছে =====
+const ADMIN_EMAILS = ["sabbirahmedsn12@gmail.com"];
 function isAdmin(){
   const u = auth.currentUser;
   if(!u || !u.email) return false;
   return ADMIN_EMAILS.includes(u.email.toLowerCase());
 }
-
-// Telegram - টোকেন এখানে না রেখে পরে সরিয়ে ফেলবেন, এখন খালি রাখলাম যাতে চুরি না হয়
-const BOT_TOKEN = "";
-const CHAT_ID = "";
-async function sendToTelegram(d){
-  if(!BOT_TOKEN) return;
-  const txt = "Notun Abedon\nName: "+d.name+"\nType: "+d.type+"\nPhone: "+d.phone+"\nAddr: "+d.address+"\n"+d.details;
-  try{ await fetch("https://api.telegram.org/bot"+BOT_TOKEN+"/sendMessage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:CHAT_ID,text:txt})}); }catch(e){}
-}
+async function sendToTelegram(d){ return; }
 function $(id){return document.getElementById(id);}
 const SERVICES=[
 ["driver","ড্রাইভার","🚗","#e7f0ff"],["auto","অটো","🛺","#fff3e0"],["cng","সিএনজি","🚕","#e8f5e9"],["pickup","পিকআপ","🚚","#fce4ec"],["bus","বাস","🚌","#ede7f6"],["truck","ট্রাক","🚛","#f3e5f5"],["bike","বাইক","🏍️","#e0f2f1"],["ambulance","অ্যাম্বুলেন্স","🚑","#ffebee"],
@@ -114,14 +104,13 @@ function renderServicePage(){
   let list=providers.filter(p=>{if(p.type!==currentServiceType)return false;if(!q)return true;return (p.name+p.address+p.phone+(p.details||"")).toLowerCase().includes(q);});
   $("serviceCount").textContent=list.length+" জন";
   let html="";
-  const admin = isAdmin();
   for(let p of list){
     let ini=(p.name||"C").trim().charAt(0).toUpperCase();
     let safePhone=(p.phone||"").replace(/[^0-9]/g,"");
     let callLink="tel:"+safePhone;
     let waLink="https://wa.me/88"+safePhone;
-    // শুধু অ্যাডমিন হলেই ডিলিট বাটন দেখাবে
-    let delBtn = admin ? '<button class="btn b1" onclick="deleteProvider(\''+p.fbId+'\')" style="padding:8px 12px;background:#ffebee;color:#d32f2f">🗑️ ডিলিট</button>' : '';
+    // ডিলিট বাটন এখন সবার দেখা যাবে, কিন্তু কাজ করবে শুধু অ্যাডমিনের
+    let delBtn = '<button class="btn b1" onclick="deleteProvider(\''+p.fbId+'\')" style="padding:8px 12px;background:#ffebee;color:#d32f2f">🗑️ ডিলিট</button>';
     html+='<div class="card" style="flex-direction:column;align-items:stretch"><div style="display:flex;gap:10px;align-items:center"><div class="avatar">'+ini+'</div><div style="flex:1"><b>'+p.name+'</b><br><small>📍 '+p.address+'</small><br><small>📞 '+p.phone+'</small></div></div><div style="background:#f5f7fb;border-radius:12px;padding:10px;margin-top:8px;font-size:13px">'+(p.details||"বিবরণ নাই")+'</div><div style="display:flex;gap:8px;margin-top:12px"><a href="'+callLink+'" style="flex:1;text-decoration:none"><button class="btn b2" style="width:100%">📞 কল করুন</button></a><a href="'+waLink+'" target="_blank" style="flex:1;text-decoration:none"><button class="btn b1" style="width:100%">💬 WhatsApp</button></a>'+delBtn+'</div></div>';
   }
   $("serviceProviderCards").innerHTML=html||'<div style="padding:24px;text-align:center;color:#6b7280">এখনো কেউ নেই</div>';
@@ -131,19 +120,20 @@ db.ref("providers").on("value",(snap)=>{
   if(val){ Object.keys(val).forEach(k=>{ providers.push({...val[k], fbId:k}); }); }
   initCats(); if(currentServiceType) renderServicePage();
 });
-
-// ===== আসল নিরাপত্তা এখানে =====
 function deleteProvider(fbId){
+  if(!auth.currentUser){
+    alert("ডিলিট করতে আগে লগইন করতে হবে। উপরে L বাটনে চাপ দিয়ে sabbirahmedsn12@gmail.com দিয়ে লগইন করেন");
+    goPage("login");
+    return;
+  }
   if(!isAdmin()){
-    alert("শুধু অ্যাডমিন ডিলিট করতে পারবে");
+    alert("শুধু অ্যাডমিন ডিলিট করতে পারবে। আপনি লগইন করছেন: " + auth.currentUser.email + " | অ্যাডমিন হলো: sabbirahmedsn12@gmail.com");
     return;
   }
   if(!confirm("আপনি কি সত্যিই এই সেবাটি ডিলিট করতে চান?")){
     return;
   }
-  db.ref("providers/"+fbId).remove().then(()=>{
-    alert("ডিলিট হয়ে গেছে");
-  }).catch(e=>alert(e.message));
+  db.ref("providers/"+fbId).remove().then(()=>{ alert("ডিলিট হয়ে গেছে"); }).catch(e=>alert(e.message));
 }
 $("searchBox").addEventListener("input",function(){let q=this.value.toLowerCase();document.querySelectorAll(".cat").forEach(el=>{let t=el.getAttribute("data-type");let name=SERVICES.find(s=>s[0]===t)[1].toLowerCase();el.style.display=name.includes(q)||t.includes(q)?"flex":"none";});});
 $("serviceSearchBox").addEventListener("input",renderServicePage);
@@ -164,7 +154,6 @@ auth.onAuthStateChanged(u=>{
     $("profileNameText").textContent=u.displayName||"User";
     $("pName").value=u.displayName||""; $("pEmail").value=u.email||"";
   }
-  // লগইন চেঞ্জ হলে আবার রেন্ডার করবে, যাতে অ্যাডমিনের বাটন আসে/যায়
   if(currentServiceType) renderServicePage();
 });
 $("btnSubmit").addEventListener("click", async ()=>{
@@ -173,7 +162,6 @@ $("btnSubmit").addEventListener("click", async ()=>{
   $("formMsg").textContent="জমা হচ্ছে...";
   try{
     await db.ref("providers").push(data);
-    await sendToTelegram(data);
     $("formMsg").textContent="জমা হয়েছে!";
     $("fName").value=""; $("fPhone").value=""; $("fAddr").value=""; $("fDetails").value="";
     setTimeout(()=>goHome(),900);
