@@ -45,7 +45,7 @@
 <div id="catBox" class="catGrid"></div>
 </div>
 <div id="page-register" class="app-section"><div class="formCard"><h3 style="margin:0">নতুন সেবা যোগ করুন</h3><select id="fType"></select><input id="fName" placeholder="আপনার নাম"><input id="fAddr" placeholder="ঠিকানা - চরখাই, বিয়ানীবাজার"><input id="fPhone" placeholder="ফোন - 017..."><textarea id="fDetails" placeholder="অভিজ্ঞতা / বিবরণ লিখুন"></textarea><button class="btn b2" id="btnSubmit" style="margin-top:12px">জমা দিন</button><div id="formMsg" style="margin-top:10px;font-weight:700"></div></div></div>
-<div id="page-account" class="app-section"><div class="profileHeader"><img id="profilePic" class="profilePic" src="https://i.pravatar.cc/200?u=guest"><div id="profileNameText" style="margin-top:10px;font-weight:900;font-size:18px">অতিথি</div></div><div class="formCard" style="margin-top:12px"><h3>আমার প্রোফাইল</h3><input id="pName" placeholder="নাম"><input id="pEmail" disabled style="background:#f3f5fb;margin-top:8px"><input id="pPhone" placeholder="ফোন" style="margin-top:8px"><input id="pAddress" placeholder="ঠিকানা" style="margin-top:8px"><button class="btn b2" id="btnSaveProfile" style="margin-top:12px">সেভ করুন</button><button class="btn b1" id="btnLogout" style="width:100%;margin-top:10px">লগআউট</button></div></div>
+<div id="page-account" class="app-section"><div class="profileHeader"><img id="profilePic" class="profilePic" src="https://i.pravatar.cc/200?u=guest"><div id="profileNameText" style="margin-top:10px;font-weight:900;font-size:18px">অতিথি</div></div><div class="formCard" style="margin-top:12px"><h3>আমার প্রোফাইল</h3><input id="pName" placeholder="নাম"><input id="pEmail" disabled style="background:#f3f5fb;margin-top:8px"><input id="pPhone" placeholder="ফোন" style="margin-top:8px"><input id="pAddress" placeholder="ঠিকানা" style="margin-top:8px"><div id="myUidBox" style="margin-top:10px;font-size:12px;color:#6b7280;word-break:break-all"></div><button class="btn b2" id="btnSaveProfile" style="margin-top:12px">সেভ করুন</button><button class="btn b1" id="btnLogout" style="width:100%;margin-top:10px">লগআউট</button></div></div>
 <div id="page-login" class="app-section"><div class="loginCard"><div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#0a66ff,#00d2ff);margin:0 auto 12px;display:grid;place-items:center;color:#fff;font-size:28px">C</div><h3>Bangladesh Service-</h3><p style="color:#6b7280">গুগল দিয়ে লগইন করে সারা পৃথিবীতে আপনার সেবা ছড়িয়ে দিন</p><button class="btn b2" id="btnGoogle">Google দিয়ে লগইন</button></div></div>
 </main>
 <div id="page-service" class="page">
@@ -61,15 +61,13 @@
 const firebaseConfig = { apiKey: "AIzaSyClrBlIOGz-LtuaPlynY75aIKUgUWN8LRY", authDomain: "pathsathi-62d84.firebaseapp.com", databaseURL: "https://pathsathi-62d84-default-rtdb.firebaseio.com", projectId: "pathsathi-62d84", storageBucket: "pathsathi-62d84.firebasestorage.app", messagingSenderId: "1078248903889", appId: "1:1078248903889:web:310b9ef221bccfeeaf61f0" };
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(); const db=firebase.database();
-
-// ===== অ্যাডমিন - আপনার সঠিক Gmail =====
 const ADMIN_EMAILS = ["sabbirahmed12sn@gmail.com"];
 function isAdmin(){
   const u = auth.currentUser;
-  if(!u || !u.email) return false;
-  return ADMIN_EMAILS.includes(u.email.toLowerCase());
+  if(!u) return false;
+  if(u.email && ADMIN_EMAILS.includes(u.email.toLowerCase())) return true;
+  return false;
 }
-async function sendToTelegram(d){ return; }
 function $(id){return document.getElementById(id);}
 const SERVICES=[
 ["driver","ড্রাইভার","🚗","#e7f0ff"],["auto","অটো","🛺","#fff3e0"],["cng","সিএনজি","🚕","#e8f5e9"],["pickup","পিকআপ","🚚","#fce4ec"],["bus","বাস","🚌","#ede7f6"],["truck","ট্রাক","🚛","#f3e5f5"],["bike","বাইক","🏍️","#e0f2f1"],["ambulance","অ্যাম্বুলেন্স","🚑","#ffebee"],
@@ -120,18 +118,21 @@ db.ref("providers").on("value",(snap)=>{
   initCats(); if(currentServiceType) renderServicePage();
 });
 function deleteProvider(fbId){
-  if(!auth.currentUser){
-    alert("ডিলিট করতে আগে লগইন করতে হবে। উপরে L বাটনে চাপ দিয়ে sabbirahmed12sn@gmail.com দিয়ে লগইন করেন");
+  const u = auth.currentUser;
+  if(!u){
+    alert("ডিলিট করতে আগে লগইন করতে হবে।");
     goPage("login");
     return;
   }
+  if(!u.email){
+    alert("আপনার Gmail পাওয়া যাচ্ছে না (null)। দয়া করে লগআউট করে আবার sabbirahmed12sn@gmail.com দিয়ে লগইন করেন। আপনার UID: " + u.uid);
+    return;
+  }
   if(!isAdmin()){
-    alert("শুধু অ্যাডমিন ডিলিট করতে পারবে। আপনি লগইন করছেন: " + auth.currentUser.email + " | অ্যাডমিন হলো: sabbirahmed12sn@gmail.com");
+    alert("শুধু অ্যাডমিন ডিলিট করতে পারবে। আপনি লগইন করছেন: " + u.email + " | অ্যাডমিন হলো: sabbirahmed12sn@gmail.com");
     return;
   }
-  if(!confirm("আপনি কি সত্যিই এই সেবাটি ডিলিট করতে চান?")){
-    return;
-  }
+  if(!confirm("আপনি কি সত্যিই এই সেবাটি ডিলিট করতে চান?")) return;
   db.ref("providers/"+fbId).remove().then(()=>{ alert("ডিলিট হয়ে গেছে"); }).catch(e=>alert(e.message));
 }
 $("searchBox").addEventListener("input",function(){let q=this.value.toLowerCase();document.querySelectorAll(".cat").forEach(el=>{let t=el.getAttribute("data-type");let name=SERVICES.find(s=>s[0]===t)[1].toLowerCase();el.style.display=name.includes(q)||t.includes(q)?"flex":"none";});});
@@ -143,7 +144,12 @@ $("nav-home").addEventListener("click",goHome);
 $("nav-register").addEventListener("click",()=>goPage("register"));
 $("nav-account").addEventListener("click",()=>goPage("account"));
 $("topLoginBtn").addEventListener("click",()=>goPage("login"));
-$("btnGoogle").addEventListener("click",()=>{ let p=new firebase.auth.GoogleAuthProvider(); auth.signInWithPopup(p); });
+$("btnGoogle").addEventListener("click",()=>{
+  let p=new firebase.auth.GoogleAuthProvider();
+  p.addScope('email');
+  p.addScope('profile');
+  auth.signInWithPopup(p).catch(e=>alert(e.message));
+});
 $("btnLogout").addEventListener("click",()=>{auth.signOut(); location.reload();});
 auth.onAuthStateChanged(u=>{
   if(u){
@@ -151,7 +157,10 @@ auth.onAuthStateChanged(u=>{
     let hp=$("headerProfilePic"); hp.style.display="grid"; hp.textContent=(u.displayName||"P").charAt(0).toUpperCase();
     $("profilePic").src=u.photoURL||"https://i.pravatar.cc/200?u="+u.uid;
     $("profileNameText").textContent=u.displayName||"User";
-    $("pName").value=u.displayName||""; $("pEmail").value=u.email||"";
+    $("pName").value=u.displayName||""; $("pEmail").value=u.email||"Gmail পাওয়া যায়নি - আবার লগইন করেন";
+    $("myUidBox").textContent = "আপনার Gmail: " + (u.email || "null") + " | UID: " + u.uid;
+  } else {
+    $("myUidBox").textContent = "";
   }
   if(currentServiceType) renderServicePage();
 });
