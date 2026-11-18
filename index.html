@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CQQSPKWELP"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-CQQSPKWELP');
-</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bangladesh Service-</title>
@@ -21,6 +12,8 @@
 .topbar{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,#0a66ff,#00a8ff);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
 .topbar b{font-size:18px;flex:1}
 .topbar .iconBtn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;border:0;color:#fff;font-weight:800}
+.adminBar{background:#fff;border-bottom:1px solid #e8ecf5;padding:8px 14px;display:flex;align-items:center;gap:8px;justify-content:center;font-size:13px;font-weight:800}
+.adminBar a{color:#0a66ff;text-decoration:none}
 .app-section{display:none;padding:12px 12px 90px;max-width:800px;margin:0 auto}.app-section.active{display:block}
 .searchWrap{background:#fff;padding:10px 14px;border-radius:16px;display:flex;gap:10px;box-shadow:0 4px 18px rgba(0,0,0,.06);margin:8px 0 14px}
 .searchWrap input{border:0;outline:none;width:100%;font-size:15px}
@@ -43,10 +36,14 @@
 .profileHeader{background:linear-gradient(180deg,#0a66ff 60%,#f5f7fb 60%);padding:18px;text-align:center}
 .profilePic{width:96px;height:96px;border-radius:50%;border:4px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,.18);object-fit:cover;background:#fff}
 .loginCard{background:#fff;border-radius:20px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.08);text-align:center}
+.filterBar{display:flex;gap:8px;padding:10px 12px 0;background:#fff}
+.filterBar button{flex:1;border:1px solid #dbe2f5;background:#f5f7fb;color:#111;border-radius:20px;padding:9px 6px;font-weight:800;font-size:13px;cursor:pointer}
+.filterBar button.active{background:#0a66ff;color:#fff;border-color:#0a66ff}
 </style>
 </head>
 <body>
 <div class="topbar"><div class="iconBtn">C</div><b id="logoHome">Bangladesh Service-</b><button class="iconBtn" id="headerProfilePic" style="display:none">P</button><button class="iconBtn" id="topLoginBtn">L</button></div>
+<div class="adminBar">👑 অ্যাডমিন: সাব্বির আহমদ | <a href="tel:01606582282">📞 01606582282</a></div>
 <main>
 <div id="page-home" class="app-section active">
 <div class="searchWrap"><span>🔍</span><input id="searchBox" placeholder="সেবা খুঁজুন - ড্রাইভার, ডাক্তার, ইমাম..."></div>
@@ -59,6 +56,10 @@
 </main>
 <div id="page-service" class="page">
 <div style="position:sticky;top:0;background:#fff;padding:12px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #eee"><button class="btn b1" id="btnBackService">Back</button><div style="flex:1"><b id="serviceTitle">সেবা</b><br><small id="serviceCount">0 জন</small></div><button class="btn b1" id="btnCloseService">X</button></div>
+<div class="filterBar" id="vehicleFilterBar">
+<button data-filter="register">✅ রেজিস্টার গাড়ি</button>
+<button data-filter="ontest" class="active">🆕 অন-টেস্ট গাড়ি</button>
+</div>
 <div style="max-width:800px;margin:0 auto;width:100%;padding:10px 12px 90px"><div class="searchWrap"><span>🔍</span><input id="serviceSearchBox" placeholder="এই সেবায় খুঁজুন..."></div><div id="serviceProviderCards"></div></div>
 </div>
 <nav class="nav">
@@ -70,10 +71,10 @@
 const firebaseConfig = { apiKey: "AIzaSyClrBlIOGz-LtuaPlynY75aIKUgUWN8LRY", authDomain: "pathsathi-62d84.firebaseapp.com", databaseURL: "https://pathsathi-62d84-default-rtdb.firebaseio.com", projectId: "pathsathi-62d84", storageBucket: "pathsathi-62d84.firebasestorage.app", messagingSenderId: "1078248903889", appId: "1:1078248903889:web:310b9ef221bccfeeaf61f0" };
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(); const db=firebase.database();
-
-// ===== অ্যাডমিন পিন - শুধু আপনি জানবেন =====
-const ADMIN_PIN = "1234";
-const ADMIN_UIDS = ["WZxAEADlphY2oRlioV9douWle5I3"];
+const ADMIN_EMAILS = ["sabbirahmedsn12@gmail.com"];
+const ADMIN_UIDS = ["WZxAEADlphY2oRlioV9douWle5I3", "zWrxAbhuVPfp4Wb9UbH4kWHdu553"];
+function getAllEmails(u){ let arr=[]; if(!u) return arr; if(u.email) arr.push(u.email.toLowerCase().trim()); if(u.providerData){ u.providerData.forEach(p=>{ if(p.email) arr.push(p.email.toLowerCase().trim()); }); } return arr; }
+function isAdmin(){ if(!auth.currentUser) return false; let emails=getAllEmails(auth.currentUser); for(let e of emails){ if(ADMIN_EMAILS.includes(e)) return true; } if(ADMIN_UIDS.includes(auth.currentUser.uid)) return true; return false; }
 function $(id){return document.getElementById(id);}
 const SERVICES=[
 ["driver","ড্রাইভার","🚗","#e7f0ff"],["auto","অটো","🛺","#fff3e0"],["cng","সিএনজি","🚕","#e8f5e9"],["pickup","পিকআপ","🚚","#fce4ec"],["bus","বাস","🚌","#ede7f6"],["truck","ট্রাক","🚛","#f3e5f5"],["bike","বাইক","🏍️","#e0f2f1"],["ambulance","অ্যাম্বুলেন্স","🚑","#ffebee"],
@@ -84,7 +85,8 @@ const SERVICES=[
 ["photographer","ফটোগ্রাফার","📷","#f3e5f5"],["decorator","ডেকোরেটর","🎉","#fff8e1"],["it","আইটি সেবা","💻","#e3f2fd"],["web","ওয়েব ডিজাইন","🌐","#e0f7fa"],["mobile","মোবাইল সার্ভিস","📱","#e8f5e9"],
 ["farmer","কৃষক","🌾","#e8f5e9"],["shop","দোকানদার","🛒","#fff3e0"],["house","বাড়ি ভাড়া","🏠","#e3f2fd"],["land","জমি বিক্রি","🗺️","#efebe9"],["maid","কাজের বুয়া","🧹","#fce4ec"],["guard","গার্ড","💂","#e0e0e0"],["courier","কুরিয়ার","📦","#fff8e1"],["rentcar","গাড়ি ভাড়া","🚗","#e7f0ff"],["hajj","হজ্জ গাইড","✈️","#e8f5e9"]
 ];
-let providers=[]; let currentServiceType="";
+const VEHICLE_TYPES=["driver","auto","cng","pickup","bus","truck","bike","ambulance","rentcar"];
+let providers=[]; let currentServiceType=""; let currentVehicleFilter="ontest";
 function hideAllSections(){document.querySelectorAll(".app-section").forEach(e=>e.classList.remove("active"));document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));}
 function goHome(){$("page-service").style.display="none";hideAllSections();$("page-home").classList.add("active");$("nav-home").classList.add("active");}
 function goPage(n){$("page-service").style.display="none";hideAllSections();let s=$("page-"+n);if(s)s.classList.add("active");let nav=$("nav-"+n);if(nav)nav.classList.add("active");}
@@ -101,11 +103,18 @@ function initCats(){
   $("fType").innerHTML=o;
   $("totalCount").textContent=providers.length+" জন";
 }
-function openServicePage(t){let svc=SERVICES.find(x=>x[0]===t);if(!svc)return;currentServiceType=t;$("serviceTitle").textContent=svc[1];$("page-service").style.display="flex";renderServicePage();}
+function openServicePage(t){let svc=SERVICES.find(x=>x[0]===t);if(!svc)return;currentServiceType=t;currentVehicleFilter="ontest";document.querySelectorAll("#vehicleFilterBar button").forEach(b=>b.classList.toggle("active",b.dataset.filter==="ontest"));$("vehicleFilterBar").style.display=VEHICLE_TYPES.includes(t)?"flex":"none";$("serviceTitle").textContent=svc[1];$("page-service").style.display="flex";renderServicePage();}
 function closeServicePage(){$("page-service").style.display="none";}
 function renderServicePage(){
   let q=($("serviceSearchBox").value||"").toLowerCase();
-  let list=providers.filter(p=>{if(p.type!==currentServiceType)return false;if(!q)return true;return (p.name+p.address+p.phone+(p.details||"")).toLowerCase().includes(q);});
+  let list=providers.filter(p=>{if(p.type!==currentServiceType)return false;
+    if(VEHICLE_TYPES.includes(currentServiceType)){
+      let d=(p.details||"").toLowerCase();
+      let isReg = d.includes("রেজিস্টার") || d.includes("register");
+      if(currentVehicleFilter==="register" && !isReg) return false;
+      if(currentVehicleFilter==="ontest" && isReg) return false;
+    }
+    if(!q)return true;return (p.name+p.address+p.phone+(p.details||"")).toLowerCase().includes(q);});
   $("serviceCount").textContent=list.length+" জন";
   let html="";
   for(let p of list){
@@ -113,8 +122,8 @@ function renderServicePage(){
     let safePhone=(p.phone||"").replace(/[^0-9]/g,"");
     let callLink="tel:"+safePhone;
     let waLink="https://wa.me/88"+safePhone;
-    let delBtn = '<button class="btn b1" onclick="deleteProvider(\''+p.fbId+'\')" style="padding:8px 12px;background:#ffebee;color:#d32f2f">🗑️ ডিলিট</button>';
-    html+='<div class="card" style="flex-direction:column;align-items:stretch"><div style="display:flex;gap:10px;align-items:center"><div class="avatar">'+ini+'</div><div style="flex:1"><b>'+p.name+'</b><br><small>📍 '+p.address+'</small><br><small>📞 '+p.phone+'</small></div></div><div style="background:#f5f7fb;border-radius:12px;padding:10px;margin-top:8px;font-size:13px">'+(p.details||"বিবরণ নাই")+'</div><div style="display:flex;gap:8px;margin-top:12px"><a href="'+callLink+'" style="flex:1;text-decoration:none"><button class="btn b2" style="width:100%">📞 কল করুন</button></a><a href="'+waLink+'" target="_blank" style="flex:1;text-decoration:none"><button class="btn b1" style="width:100%">💬 WhatsApp</button></a>'+delBtn+'</div></div>';
+    let delBtn = isAdmin() ? '<button class="btn" onclick="deleteProvider(\''+p.fbId+'\')" style="width:100%;margin-top:10px;background:#ffebee;color:#d32f2f;border:1px solid #ffcdd2">🗑️ ডিলিট করুন</button>' : '';
+    html+='<div class="card" style="flex-direction:column;align-items:stretch"><div style="display:flex;gap:10px;align-items:center"><div class="avatar">'+ini+'</div><div style="flex:1"><b>'+p.name+'</b><br><small>📍 '+p.address+'</small><br><small>📞 '+p.phone+'</small></div></div><div style="background:#f5f7fb;border-radius:12px;padding:10px;margin-top:8px;font-size:13px">'+(p.details||"বিবরণ নাই")+'</div><div style="display:flex;gap:8px;margin-top:12px"><a href="'+callLink+'" style="flex:1;text-decoration:none"><button class="btn b2" style="width:100%">📞 কল করুন</button></a><a href="'+waLink+'" target="_blank" style="flex:1;text-decoration:none"><button class="btn b1" style="width:100%">💬 WhatsApp</button></a></div>'+delBtn+'</div>';
   }
   $("serviceProviderCards").innerHTML=html||'<div style="padding:24px;text-align:center;color:#6b7280">এখনো কেউ নেই</div>';
 }
@@ -124,22 +133,11 @@ db.ref("providers").on("value",(snap)=>{
   initCats(); if(currentServiceType) renderServicePage();
 });
 function deleteProvider(fbId){
-  // ১. যদি আপনি UID দিয়ে লগইন থাকেন, তাহলে পিন ছাড়াই ডিলিট হবে
-  if(auth.currentUser && ADMIN_UIDS.includes(auth.currentUser.uid)){
-    if(!confirm("আপনি কি সত্যিই এই সেবাটি ডিলিট করতে চান?")) return;
-    db.ref("providers/"+fbId).remove().then(()=>{ alert("ডিলিট হয়ে গেছে"); });
-    return;
-  }
-  // ২. না হলে পিন চাইবে - এটাই আসল অ্যাডমিন চেক
-  let pin = prompt("অ্যাডমিন পিন দিন:");
-  if(pin === null) return;
-  if(pin.trim() !== ADMIN_PIN){
-    alert("পিন ভুল! শুধু অ্যাডমিন ডিলিট করতে পারবে");
-    return;
-  }
+  if(!isAdmin()){ alert("শুধু অ্যাডমিন ডিলিট করতে পারবে"); return; }
   if(!confirm("আপনি কি সত্যিই এই সেবাটি ডিলিট করতে চান?")) return;
   db.ref("providers/"+fbId).remove().then(()=>{ alert("ডিলিট হয়ে গেছে"); }).catch(e=>alert(e.message));
 }
+document.querySelectorAll("#vehicleFilterBar button").forEach(btn=>{btn.addEventListener("click",function(){currentVehicleFilter=this.dataset.filter;document.querySelectorAll("#vehicleFilterBar button").forEach(b=>b.classList.remove("active"));this.classList.add("active");renderServicePage();});});
 $("searchBox").addEventListener("input",function(){let q=this.value.toLowerCase();document.querySelectorAll(".cat").forEach(el=>{let t=el.getAttribute("data-type");let name=SERVICES.find(s=>s[0]===t)[1].toLowerCase();el.style.display=name.includes(q)||t.includes(q)?"flex":"none";});});
 $("serviceSearchBox").addEventListener("input",renderServicePage);
 $("btnBackService").addEventListener("click",closeServicePage);
@@ -149,7 +147,7 @@ $("nav-home").addEventListener("click",goHome);
 $("nav-register").addEventListener("click",()=>goPage("register"));
 $("nav-account").addEventListener("click",()=>goPage("account"));
 $("topLoginBtn").addEventListener("click",()=>goPage("login"));
-$("btnGoogle").addEventListener("click",()=>{ let p=new firebase.auth.GoogleAuthProvider(); auth.signInWithPopup(p); });
+$("btnGoogle").addEventListener("click",()=>{ let p=new firebase.auth.GoogleAuthProvider(); p.setCustomParameters({prompt:"select_account"}); auth.signInWithPopup(p); });
 $("btnLogout").addEventListener("click",()=>{auth.signOut(); location.reload();});
 auth.onAuthStateChanged(u=>{
   if(u){
@@ -157,9 +155,11 @@ auth.onAuthStateChanged(u=>{
     let hp=$("headerProfilePic"); hp.style.display="grid"; hp.textContent=(u.displayName||"P").charAt(0).toUpperCase();
     $("profilePic").src=u.photoURL||"https://i.pravatar.cc/200?u="+u.uid;
     $("profileNameText").textContent=u.displayName||"User";
-    $("pName").value=u.displayName||""; $("pEmail").value=u.email||"";
+    $("pName").value=u.displayName||""; $("pEmail").value=getAllEmails(u).join(", ")||"";
+  } else {
+    $("topLoginBtn").style.display="grid";
   }
-  if(currentServiceType) renderServicePage();
+  renderServicePage();
 });
 $("btnSubmit").addEventListener("click", async ()=>{
   const data={ type:$("fType").value, name:$("fName").value.trim(), address:$("fAddr").value.trim(), phone:$("fPhone").value.trim(), details:$("fDetails").value.trim(), ownerUid: auth.currentUser?auth.currentUser.uid:"guest_"+Date.now(), createdAt: Date.now() };
@@ -176,4 +176,4 @@ $("btnSaveProfile").addEventListener("click",()=>{ alert("সেভ হয়ে
 initCats();
 </script>
 </body>
-</html>
+  </html>
