@@ -50,7 +50,7 @@
 <div class="hero"><div><b style="font-size:16px">Bangladesh Service-</b><br><small style="color:#6b7280">Bangladesh Service-</small></div><div style="text-align:right"><b id="totalCount" style="font-size:22px;color:#0a66ff">0 জন</b><br><small>সক্রিয়</small></div></div>
 <div id="catBox" class="catGrid"></div>
 </div>
-<div id="page-register" class="app-section"><div class="formCard"><h3 style="margin:0">নতুন সেবা যোগ করুন</h3><select id="fType"></select><input id="fName" placeholder="আপনার নাম"><input id="fAddr" placeholder="ঠিকানা - চরখাই, বিয়ানীবাজার"><input id="fPhone" placeholder="ফোন - 017..."><textarea id="fDetails" placeholder="অভিজ্ঞতা / বিবরণ লিখুন"></textarea><button class="btn b2" id="btnSubmit" style="margin-top:12px">জমা দিন</button><div id="formMsg" style="margin-top:10px;font-weight:700"></div></div></div>
+<div id="page-register" class="app-section"><div class="formCard"><h3 style="margin:0">নতুন সেবা যোগ করুন</h3><select id="fType"></select><div id="vehicleStatusWrap" style="display:none"><select id="fVehicleStatus"><option value="ontest">🆕 অন-টেস্ট গাড়ি</option><option value="register">✅ রেজিস্টার গাড়ি</option></select></div><input id="fName" placeholder="আপনার নাম"><input id="fAddr" placeholder="ঠিকানা - চরখাই, বিয়ানীবাজার"><input id="fPhone" placeholder="ফোন - 017..."><textarea id="fDetails" placeholder="অভিজ্ঞতা / বিবরণ লিখুন"></textarea><button class="btn b2" id="btnSubmit" style="margin-top:12px">জমা দিন</button><div id="formMsg" style="margin-top:10px;font-weight:700"></div></div></div>
 <div id="page-account" class="app-section"><div class="profileHeader"><img id="profilePic" class="profilePic" src="https://i.pravatar.cc/200?u=guest"><div id="profileNameText" style="margin-top:10px;font-weight:900;font-size:18px">অতিথি</div></div><div class="formCard" style="margin-top:12px"><h3>আমার প্রোফাইল</h3><input id="pName" placeholder="নাম"><input id="pEmail" disabled style="background:#f3f5fb;margin-top:8px"><input id="pPhone" placeholder="ফোন" style="margin-top:8px"><input id="pAddress" placeholder="ঠিকানা" style="margin-top:8px"><button class="btn b2" id="btnSaveProfile" style="margin-top:12px">সেভ করুন</button><button class="btn b1" id="btnLogout" style="width:100%;margin-top:10px">লগআউট</button></div></div>
 <div id="page-login" class="app-section"><div class="loginCard"><div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#0a66ff,#00d2ff);margin:0 auto 12px;display:grid;place-items:center;color:#fff;font-size:28px">C</div><h3>Bangladesh Service-</h3><p style="color:#6b7280">গুগল দিয়ে লগইন করে সারা পৃথিবীতে আপনার সেবা ছড়িয়ে দিন</p><button class="btn b2" id="btnGoogle">Google দিয়ে লগইন</button></div></div>
 </main>
@@ -91,6 +91,16 @@ function hideAllSections(){document.querySelectorAll(".app-section").forEach(e=>
 function goHome(){$("page-service").style.display="none";hideAllSections();$("page-home").classList.add("active");$("nav-home").classList.add("active");}
 function goPage(n){$("page-service").style.display="none";hideAllSections();let s=$("page-"+n);if(s)s.classList.add("active");let nav=$("nav-"+n);if(nav)nav.classList.add("active");}
 function getCount(t){return providers.filter(p=>p.type===t).length;}
+function getVehicleStatus(p){
+  if(p.vehicleStatus) return p.vehicleStatus;
+  let d=(p.details||"").toLowerCase();
+  if(d.includes("রেজিস্টার") || d.includes("register")) return "register";
+  return "ontest";
+}
+function updateVehicleStatusVisibility(){
+  let t=$("fType").value;
+  $("vehicleStatusWrap").style.display = VEHICLE_TYPES.includes(t) ? "block" : "none";
+}
 function initCats(){
   let h="";
   for(let i=0;i<SERVICES.length;i++){
@@ -102,6 +112,7 @@ function initCats(){
   let o=""; for(let i=0;i<SERVICES.length;i++){o+='<option value="'+SERVICES[i][0]+'">'+SERVICES[i][1]+'</option>';}
   $("fType").innerHTML=o;
   $("totalCount").textContent=providers.length+" জন";
+  updateVehicleStatusVisibility();
 }
 function openServicePage(t){let svc=SERVICES.find(x=>x[0]===t);if(!svc)return;currentServiceType=t;currentVehicleFilter="ontest";document.querySelectorAll("#vehicleFilterBar button").forEach(b=>b.classList.toggle("active",b.dataset.filter==="ontest"));$("vehicleFilterBar").style.display=VEHICLE_TYPES.includes(t)?"flex":"none";$("serviceTitle").textContent=svc[1];$("page-service").style.display="flex";renderServicePage();}
 function closeServicePage(){$("page-service").style.display="none";}
@@ -109,10 +120,7 @@ function renderServicePage(){
   let q=($("serviceSearchBox").value||"").toLowerCase();
   let list=providers.filter(p=>{if(p.type!==currentServiceType)return false;
     if(VEHICLE_TYPES.includes(currentServiceType)){
-      let d=(p.details||"").toLowerCase();
-      let isReg = d.includes("রেজিস্টার") || d.includes("register");
-      if(currentVehicleFilter==="register" && !isReg) return false;
-      if(currentVehicleFilter==="ontest" && isReg) return false;
+      if(getVehicleStatus(p) !== currentVehicleFilter) return false;
     }
     if(!q)return true;return (p.name+p.address+p.phone+(p.details||"")).toLowerCase().includes(q);});
   $("serviceCount").textContent=list.length+" জন";
@@ -149,6 +157,7 @@ $("nav-account").addEventListener("click",()=>goPage("account"));
 $("topLoginBtn").addEventListener("click",()=>goPage("login"));
 $("btnGoogle").addEventListener("click",()=>{ let p=new firebase.auth.GoogleAuthProvider(); p.setCustomParameters({prompt:"select_account"}); auth.signInWithPopup(p); });
 $("btnLogout").addEventListener("click",()=>{auth.signOut(); location.reload();});
+$("fType").addEventListener("change",updateVehicleStatusVisibility);
 auth.onAuthStateChanged(u=>{
   if(u){
     $("topLoginBtn").style.display="none";
@@ -162,7 +171,8 @@ auth.onAuthStateChanged(u=>{
   renderServicePage();
 });
 $("btnSubmit").addEventListener("click", async ()=>{
-  const data={ type:$("fType").value, name:$("fName").value.trim(), address:$("fAddr").value.trim(), phone:$("fPhone").value.trim(), details:$("fDetails").value.trim(), ownerUid: auth.currentUser?auth.currentUser.uid:"guest_"+Date.now(), createdAt: Date.now() };
+  let vStatus = VEHICLE_TYPES.includes($("fType").value) ? $("fVehicleStatus").value : "";
+  const data={ type:$("fType").value, vehicleStatus: vStatus, name:$("fName").value.trim(), address:$("fAddr").value.trim(), phone:$("fPhone").value.trim(), details:$("fDetails").value.trim(), ownerUid: auth.currentUser?auth.currentUser.uid:"guest_"+Date.now(), createdAt: Date.now() };
   if(!data.name||!data.phone){ $("formMsg").textContent="নাম ও ফোন দিন"; return; }
   $("formMsg").textContent="জমা হচ্ছে...";
   try{
@@ -176,4 +186,4 @@ $("btnSaveProfile").addEventListener("click",()=>{ alert("সেভ হয়ে
 initCats();
 </script>
 </body>
-  </html>
+</html>
