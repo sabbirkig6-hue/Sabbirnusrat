@@ -27,7 +27,7 @@
 .nav button{border:0;background:0;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:2px;color:#6b7280}
 .nav button.active{color:#0a66ff;font-weight:900}
 .card{background:#fff;border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,.05);display:flex;gap:10px;align-items:center}
-.avatar{width:48px;height:48px;border-radius:50%;background:#e6efff;display:grid;place-items:center;font-weight:900;color:#0a66ff}
+.avatar{width:48px;height:48px;border-radius:50%;background:#e6efff;display:grid;place-items:center;font-weight:900;color:#0a66ff;position:relative;flex-shrink:0}
 .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:800}
 .b1{background:#eef2ff;color:#0a66ff}.b2{background:#0a66ff;color:#fff;width:100%}
 .formCard{background:#fff;border-radius:18px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
@@ -39,10 +39,60 @@
 .filterBar{display:flex;gap:8px;padding:10px 12px 0;background:#fff}
 .filterBar button{flex:1;border:1px solid #dbe2f5;background:#f5f7fb;color:#111;border-radius:20px;padding:9px 6px;font-weight:800;font-size:13px;cursor:pointer}
 .filterBar button.active{background:#0a66ff;color:#fff;border-color:#0a66ff}
+.bellWrap{position:relative}
+.bellDot{position:absolute;top:-2px;right:-2px;background:#ff3b30;color:#fff;font-size:10px;font-weight:900;min-width:18px;height:18px;border-radius:50%;display:grid;place-items:center;padding:0 4px;border:2px solid #0a66ff}
+.notifPanel{position:fixed;top:0;right:0;left:0;bottom:0;background:#fff;z-index:100;display:none;overflow:hidden;display:none;flex-direction:column}
+.notifHead{background:#0a66ff;color:#fff;padding:14px;font-weight:900;display:flex;justify-content:space-between;align-items:center}
+.notifItem{padding:14px;border-bottom:1px solid #eef2ff;display:flex;gap:12px;align-items:center;cursor:pointer}
+.tabBtn{flex:1;padding:11px;border-radius:20px;border:1px solid #dbe2f5;background:#f5f7fb;font-weight:800;cursor:pointer}
+.tabBtn.active{background:#0a66ff;color:#fff}
+.chatBubble{max-width:82%;padding:10px 13px;border-radius:16px;font-size:14px;margin:5px 0;line-height:1.4}
+.chatMe{background:#0a66ff;color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.chatOther{background:#eef2ff;margin-right:auto;border-bottom-left-radius:4px}
 </style>
 </head>
 <body>
-<div class="topbar"><div class="iconBtn">C</div><b id="logoHome">Bangladesh Service-</b><button class="iconBtn" id="headerProfilePic" style="display:none">P</button><button class="iconBtn" id="topLoginBtn">L</button></div>
+<div class="topbar"><div class="iconBtn">C</div><b id="logoHome">Bangladesh Service-</b><div class="bellWrap"><button class="iconBtn" id="notifBtn" style="font-size:18px">🔔</button><span class="bellDot" id="notifDot">0</span></div><button class="iconBtn" id="headerProfilePic" style="display:none">P</button><button class="iconBtn" id="topLoginBtn">L</button></div>
+
+<div id="notifPanel" class="notifPanel">
+<div class="notifHead"><span>🔔 নোটিফিকেশন - <span id="notifTotal">0 জন</span></span><button onclick="closeNotif()" style="border:0;background:rgba(255,255,255,.25);color:#fff;border-radius:50%;width:28px;height:28px">X</button></div>
+<div style="padding:12px 12px 0">
+<div style="display:flex;gap:8px">
+<button class="tabBtn active" id="tabChatBtn" onclick="showNotifTab('chat')">💬 চ্যাট লিস্ট</button>
+<button class="tabBtn" id="tabPrivacyBtn" onclick="showNotifTab('privacy')">🔒 প্রাইভেসি</button>
+</div>
+</div>
+
+<div id="notifChatTab" style="flex:1;display:flex;flex-direction:column;overflow:hidden;padding:12px">
+<div id="userChatBox" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+<div style="background:#e6f0ff;border-radius:14px;padding:12px;display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#0a66ff;color:#fff">S</div><div><b>সাব্বির আহমদ (এডমিন)</b><br><small style="color:green">🟢 অনলাইন - যেকোনো সাহায্যের জন্য মেসেজ করুন</small></div></div>
+<div id="userChatMessages" style="flex:1;overflow-y:auto;padding:10px 0;display:flex;flex-direction:column;min-height:280px"></div>
+<input id="userChatName" placeholder="আপনার নাম" style="width:100%;padding:11px;border:1px solid #dbe2f5;border-radius:12px;margin-bottom:6px">
+<input id="userChatPhone" placeholder="আপনার ফোন - 017..." style="width:100%;padding:11px;border:1px solid #dbe2f5;border-radius:12px;margin-bottom:8px">
+<div style="display:flex;gap:6px;padding-bottom:8px"><input id="userChatInput" placeholder="এডমিনকে মেসেজ লিখুন..." style="flex:1;padding:13px;border:1px solid #dbe2f5;border-radius:25px;outline:none"><button onclick="sendMsgToAdmin()" style="border:0;background:#0a66ff;color:#fff;min-width:50px;height:50px;border-radius:50%;font-size:20px">➤</button></div>
+</div>
+
+<div id="adminChatBox" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+<p style="font-size:12px;color:#666;text-align:center;margin:6px 0">ইমুর মতো - সবাই আপনাকে মেসেজ করবে, আপনি উত্তর দিবেন।</p>
+<div id="adminChatList" style="flex:1;overflow-y:auto"></div>
+<div id="adminChatRoom" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+<button onclick="backToChatList()" style="border:0;background:#eef2ff;padding:9px 12px;border-radius:20px;font-weight:800;margin-bottom:8px;align-self:flex-start">← ফিরে যান</button>
+<div id="adminChatRoomTitle" style="font-weight:900;margin-bottom:6px"></div>
+<div id="adminChatMessages" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;min-height:280px"></div>
+<div style="display:flex;gap:6px;margin-top:8px;padding-bottom:8px"><input id="adminChatInput" placeholder="উত্তর লিখুন..." style="flex:1;padding:13px;border:1px solid #dbe2f5;border-radius:25px;outline:none"><button onclick="sendAdminReply()" style="border:0;background:#0a66ff;color:#fff;min-width:50px;height:50px;border-radius:50%">➤</button></div>
+</div>
+</div>
+</div>
+
+<div id="notifPrivacyTab" style="display:none;padding:12px">
+<p style="font-size:13px;color:#666">শুধু এডমিনের জন্য। আগে Gmail দিয়ে লগইন করুন, তারপর কোড দিন।</p>
+<input id="adminCodeInput" type="password" placeholder="এডমিন কোড দিন" style="width:100%;padding:12px;border:1px solid #dbe2f5;border-radius:12px">
+<button class="btn b2" onclick="checkAdminCode()" style="margin-top:10px">🔓 প্রবেশ করুন</button>
+<div id="adminCodeMsg" style="margin-top:8px;font-weight:700;text-align:center"></div>
+<div id="privacyList"></div>
+</div>
+</div>
+
 <div class="adminBar">👑 অ্যাডমিন: সাব্বির আহমদ | <a href="tel:01606582282">📞 01606582282</a></div>
 <main>
 <div id="page-home" class="app-section active">
@@ -66,13 +116,15 @@
 <button id="nav-home" class="active"><span style="font-size:20px">🏠</span>হোম</button>
 <button id="nav-register"><span style="font-size:20px">＋</span>ফর্ম</button>
 <button id="nav-account"><span style="font-size:20px">👤</span>প্রোফাইল</button>
-</nav>
-<script>
+ <script>
 const firebaseConfig = { apiKey: "AIzaSyClrBlIOGz-LtuaPlynY75aIKUgUWN8LRY", authDomain: "pathsathi-62d84.firebaseapp.com", databaseURL: "https://pathsathi-62d84-default-rtdb.firebaseio.com", projectId: "pathsathi-62d84", storageBucket: "pathsathi-62d84.firebasestorage.app", messagingSenderId: "1078248903889", appId: "1:1078248903889:web:310b9ef221bccfeeaf61f0" };
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(); const db=firebase.database();
 const ADMIN_EMAILS = ["sabbirahmedsn12@gmail.com"];
 const ADMIN_UIDS = ["WZxAEADlphY2oRlioV9douWle5I3", "zWrxAbhuVPfp4Wb9UbH4kWHdu553"];
+const ADMIN_SECRET_CODE = "52021435";
+let adminUnlocked = false;
+let allMsgs = []; let currentChatPhone = "";
 function getAllEmails(u){ let arr=[]; if(!u) return arr; if(u.email) arr.push(u.email.toLowerCase().trim()); if(u.providerData){ u.providerData.forEach(p=>{ if(p.email) arr.push(p.email.toLowerCase().trim()); }); } return arr; }
 function isAdmin(){ if(!auth.currentUser) return false; let emails=getAllEmails(auth.currentUser); for(let e of emails){ if(ADMIN_EMAILS.includes(e)) return true; } if(ADMIN_UIDS.includes(auth.currentUser.uid)) return true; return false; }
 function $(id){return document.getElementById(id);}
@@ -116,6 +168,157 @@ function initCats(){
 }
 function openServicePage(t){let svc=SERVICES.find(x=>x[0]===t);if(!svc)return;currentServiceType=t;currentVehicleFilter="ontest";document.querySelectorAll("#vehicleFilterBar button").forEach(b=>b.classList.toggle("active",b.dataset.filter==="ontest"));$("vehicleFilterBar").style.display=VEHICLE_TYPES.includes(t)?"flex":"none";$("serviceTitle").textContent=svc[1];$("page-service").style.display="flex";renderServicePage();}
 function closeServicePage(){$("page-service").style.display="none";}
+function makeCodeForAll(){
+  let used = providers.map(p=>String(p.driverCode||""));
+  let c; do{ c = String(Math.floor(1000+Math.random()*9000)); }while(used.includes(c));
+  return c;
+}
+function showNotifTab(tab){
+  $("notifChatTab").style.display = tab==="chat" ? "flex" : "none";
+  $("notifPrivacyTab").style.display = tab==="privacy" ? "block" : "none";
+  $("tabChatBtn").classList.toggle("active", tab==="chat");
+  $("tabPrivacyBtn").classList.toggle("active", tab==="privacy");
+  if(tab==="chat") renderChatList();
+  if(tab==="privacy") renderPrivacy();
+}
+// ===== IMO STYLE লম্বা চ্যাট লিস্ট =====
+function getMyPhone(){
+  let p = ($("userChatPhone").value||"").trim() || ($("pPhone").value||"").trim();
+  return p;
+}
+function renderChatList(){
+  if(isAdmin()){
+    $("adminChatBox").style.display="flex"; $("userChatBox").style.display="none";
+    renderAdminChatList();
+  } else {
+    $("userChatBox").style.display="flex"; $("adminChatBox").style.display="none";
+    if(auth.currentUser && !$("userChatName").value) $("userChatName").value = auth.currentUser.displayName||"";
+    renderUserChat();
+  }
+}
+function renderUserChat(){
+  let myPhone = getMyPhone();
+  let box = $("userChatMessages");
+  if(!myPhone){ box.innerHTML='<div style="text-align:center;color:#666;font-size:13px;padding:14px">নিচে নাম + ফোন দিয়ে মেসেজ করুন, খালি এডমিন দেখবে।</div>'; return; }
+  let mine = allMsgs.filter(m=>m.phone===myPhone).sort((a,b)=>a.time-b.time);
+  if(mine.length===0){ box.innerHTML='<div style="text-align:center;color:#666;font-size:13px;padding:14px">এখনো কোনো মেসেজ নাই।<br>লিখুন - "আসসালামু আলাইকুম, সাহায্য লাগবে"</div>'; return; }
+  let h="";
+  mine.forEach(m=>{
+    if(m.from==="admin") h+=`<div class="chatBubble chatOther"><b>এডমিন:</b><br>${m.text}</div>`;
+    else h+=`<div class="chatBubble chatMe">${m.text}</div>`;
+  });
+  box.innerHTML=h; box.scrollTop=box.scrollHeight;
+}
+function renderAdminChatList(){
+  let groups={};
+  allMsgs.forEach(m=>{ if(!groups[m.phone]) groups[m.phone]={name:m.name, phone:m.phone, last:m}; if(m.time>groups[m.phone].last.time) groups[m.phone].last=m; });
+  let keys=Object.keys(groups);
+  let html="";
+  if(keys.length===0) html='<div style="padding:16px;text-align:center;color:#666">এখনো কেউ মেসেজ করে নাই</div>';
+  else keys.forEach(k=>{
+    let g=groups[k];
+    let ini=(g.name||"A").trim().charAt(0).toUpperCase();
+    html+=`<div class="notifItem" onclick="openAdminChat('${g.phone}')"><div class="avatar">${ini}</div><div style="flex:1"><b>${g.name}</b><br><small>📞 ${g.phone}</small><br><small style="color:#666">${g.last.from==="admin"?"আপনি: ":""}${g.last.text}</small></div><span style="color:#0a66ff;font-weight:900;font-size:20px">›</span></div>`;
+  });
+  $("adminChatList").innerHTML=html;
+  $("adminChatRoom").style.display="none";
+  $("adminChatList").style.display="block";
+  $("adminChatBox").style.display="flex";
+}
+function openAdminChat(phone){
+  currentChatPhone=phone;
+  let g = allMsgs.filter(m=>m.phone===phone);
+  let name = g.length?g[0].name:phone;
+  $("adminChatRoomTitle").textContent = name + " - " + phone;
+  $("adminChatList").style.display="none";
+  $("adminChatRoom").style.display="flex";
+  renderAdminRoom();
+}
+function renderAdminRoom(){
+  let msgs = allMsgs.filter(m=>m.phone===currentChatPhone).sort((a,b)=>a.time-b.time);
+  let h="";
+  msgs.forEach(m=>{
+    if(m.from==="admin") h+=`<div class="chatBubble chatMe">${m.text}</div>`;
+    else h+=`<div class="chatBubble chatOther"><b>${m.name}:</b><br>${m.text}</div>`;
+  });
+  $("adminChatMessages").innerHTML=h||'<div style="text-align:center;color:#666">কোনো মেসেজ নাই</div>';
+  $("adminChatMessages").scrollTop=$("adminChatMessages").scrollHeight;
+}
+function backToChatList(){ renderAdminChatList(); }
+async function sendMsgToAdmin(){
+  let text=$("userChatInput").value.trim();
+  let name=$("userChatName").value.trim();
+  let phone=$("userChatPhone").value.trim();
+  if(!name||!phone){ alert("আগে আপনার নাম + ফোন দিন"); return; }
+  if(!text){ return; }
+  await db.ref("messages").push({name:name, phone:phone, text:text, from:"user", time:Date.now()});
+  $("userChatInput").value="";
+  localStorage.setItem("myChatName", name); localStorage.setItem("myChatPhone", phone);
+  // অটো রিপ্লাই - এডমিনের পক্ষ থেকে সাথে সাথে
+  setTimeout(async ()=>{
+    let autoText = "আসসালামু আলাইকুম "+name+" ভাই! ❤️ আপনার মেসেজ পাইছি। এডমিন সাব্বির আহমদ একটু পরেই আপনাকে উত্তর দিবেন। জরুরি হইলে কল করুন - 01606582282";
+    await db.ref("messages").push({name:name, phone:phone, text:autoText, from:"admin", time:Date.now()+1000});
+  }, 800);
+}
+async function sendAdminReply(){
+  let text=$("adminChatInput").value.trim();
+  if(!text||!currentChatPhone) return;
+  let g = allMsgs.filter(m=>m.phone===currentChatPhone);
+  let name = g.length?g[0].name:"";
+  await db.ref("messages").push({name:name, phone:currentChatPhone, text:text, from:"admin", time:Date.now()});
+  $("adminChatInput").value="";
+}
+function renderNotif(){
+  $("notifDot").textContent = providers.length;
+  $("notifDot").style.display = providers.length>0 ? "grid" : "none";
+  $("notifTotal").textContent = providers.length + " জন";
+  renderChatList();
+  if(adminUnlocked) renderPrivacy();
+}
+async function togglePaid(fbId){
+  if(!isAdmin()){ alert("আগে আপনার Gmail দিয়ে লগইন করুন"); return; }
+  if(!adminUnlocked){ alert("আগে প্রাইভেসি কোড দিয়ে ঢুকুন"); return; }
+  let p = providers.find(x=>x.fbId===fbId);
+  if(!p) return;
+  let newVal = !p.paidActive;
+  await db.ref("providers/"+fbId).update({paidActive: newVal, status: newVal ? "free" : "busy", lastActive: Date.now()});
+}
+function checkAdminCode(){
+  if(!isAdmin()){
+    $("adminCodeMsg").textContent = "❌ আগে আপনার Gmail দিয়ে লগইন করতে হবে!";
+    $("adminCodeMsg").style.color = "red";
+    return;
+  }
+  let v = $("adminCodeInput").value.trim();
+  if(v === ADMIN_SECRET_CODE){
+    adminUnlocked = true;
+    $("adminCodeMsg").textContent = "✅ স্বাগতম এডমিন! এখন সিএনজি পেইজে গিয়ে টিক দিতে পারবেন।";
+    $("adminCodeMsg").style.color = "green";
+    renderPrivacy();
+    if(currentServiceType) renderServicePage();
+    renderChatList();
+  } else {
+    $("adminCodeMsg").textContent = "❌ কোড ভুল হয়েছে!";
+    $("adminCodeMsg").style.color = "red";
+  }
+}
+function renderPrivacy(){
+  if(!adminUnlocked || !isAdmin()){ $("privacyList").innerHTML = ""; return; }
+  let sorted = [...providers].sort((a,b)=> (b.paidActive?1:0)-(a.paidActive?1:0));
+  let html = '<p style="font-size:13px;font-weight:800">👇 এখান থেকে অনলাইন / অফলাইন দিন</p>';
+  sorted.forEach(p=>{
+    let isOnline = p.status==="free";
+    html += `<div class="notifItem"><div style="flex:1"><b>${p.name}</b><br><small>${p.phone} - ${isOnline ? "🟢 অনলাইন" : "🔴 অফলাইন"}</small></div><button onclick="setOnline('${p.fbId}','${isOnline?"busy":"free"}')" style="border:0;padding:8px 12px;border-radius:20px;font-weight:800;color:#fff;background:${isOnline?"#ef4444":"#22c55e"}">${isOnline?"অফলাইন করুন":"অনলাইন করুন"}</button></div>`;
+  });
+  $("privacyList").innerHTML = html;
+}
+async function setOnline(fbId, status){
+  if(!isAdmin() || !adminUnlocked){ alert("আগে এডমিন কোড দিয়ে ঢুকুন"); return; }
+  await db.ref("providers/"+fbId).update({status: status, lastActive: Date.now()});
+}
+function openNotif(){ $("notifPanel").style.display="flex"; renderNotif(); }
+function closeNotif(){ $("notifPanel").style.display="none"; }
+$("notifBtn").addEventListener("click", openNotif);
 function renderServicePage(){
   let q=($("serviceSearchBox").value||"").toLowerCase();
   let list=providers.filter(p=>{if(p.type!==currentServiceType)return false;
@@ -123,6 +326,7 @@ function renderServicePage(){
       if(getVehicleStatus(p) !== currentVehicleFilter) return false;
     }
     if(!q)return true;return (p.name+p.address+p.phone+(p.details||"")).toLowerCase().includes(q);});
+  list.sort((a,b)=> (b.paidActive?1:0)-(a.paidActive?1:0));
   $("serviceCount").textContent=list.length+" জন";
   let html="";
   for(let p of list){
@@ -130,15 +334,26 @@ function renderServicePage(){
     let safePhone=(p.phone||"").replace(/[^0-9]/g,"");
     let callLink="tel:"+safePhone;
     let waLink="https://wa.me/88"+safePhone;
+    let blueTick = p.paidActive ? '<span style="background:#1877F2;color:#fff;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:900;position:absolute;bottom:-2px;right:-2px;border:2px solid #fff">✓</span>' : "";
+    let adminTick = "";
+    if(adminUnlocked && isAdmin()){
+      adminTick = `<div onclick="togglePaid('${p.fbId}')" style="position:absolute;top:10px;right:10px;width:28px;height:28px;border:2px solid #1877F2;border-radius:6px;background:${p.paidActive?"#1877F2":"#fff"};color:#fff;display:grid;place-items:center;font-weight:900;cursor:pointer;z-index:5">${p.paidActive?"✓":""}</div>`;
+    }
+    let vipBadge = p.paidActive ? '<div style="background:#fef3c7;padding:6px 10px;border-radius:10px;font-size:12px;font-weight:800;margin-top:6px">⭐ টাকা দিয়া একটিভ - সবার উপরে</div>' : "";
     let delBtn = isAdmin() ? '<button class="btn" onclick="deleteProvider(\''+p.fbId+'\')" style="width:100%;margin-top:10px;background:#ffebee;color:#d32f2f;border:1px solid #ffcdd2">🗑️ ডিলিট করুন</button>' : '';
-    html+='<div class="card" style="flex-direction:column;align-items:stretch"><div style="display:flex;gap:10px;align-items:center"><div class="avatar">'+ini+'</div><div style="flex:1"><b>'+p.name+'</b><br><small>📍 '+p.address+'</small><br><small>📞 '+p.phone+'</small></div></div><div style="background:#f5f7fb;border-radius:12px;padding:10px;margin-top:8px;font-size:13px">'+(p.details||"বিবরণ নাই")+'</div><div style="display:flex;gap:8px;margin-top:12px"><a href="'+callLink+'" style="flex:1;text-decoration:none"><button class="btn b2" style="width:100%">📞 কল করুন</button></a><a href="'+waLink+'" target="_blank" style="flex:1;text-decoration:none"><button class="btn b1" style="width:100%">💬 WhatsApp</button></a></div>'+delBtn+'</div>';
+    html+='<div class="card" style="flex-direction:column;align-items:stretch;position:relative">'+adminTick+'<div style="display:flex;gap:10px;align-items:center"><div class="avatar">'+ini+blueTick+'</div><div style="flex:1"><b>'+p.name+'</b><br><small>📍 '+p.address+'</small><br><small>📞 '+p.phone+'</small></div></div>'+vipBadge+'<div style="background:#f5f7fb;border-radius:12px;padding:10px;margin-top:8px;font-size:13px">'+(p.details||"বিবরণ নাই")+'</div><div style="display:flex;gap:8px;margin-top:12px"><a href="'+callLink+'" style="flex:1;text-decoration:none"><button class="btn b2" style="width:100%">📞 কল করুন</button></a><a href="'+waLink+'" target="_blank" style="flex:1;text-decoration:none"><button class="btn b1" style="width:100%">💬 WhatsApp</button></a></div>'+delBtn+'</div>';
   }
   $("serviceProviderCards").innerHTML=html||'<div style="padding:24px;text-align:center;color:#6b7280">এখনো কেউ নেই</div>';
 }
 db.ref("providers").on("value",(snap)=>{
   const val=snap.val(); providers=[];
   if(val){ Object.keys(val).forEach(k=>{ providers.push({...val[k], fbId:k}); }); }
-  initCats(); if(currentServiceType) renderServicePage();
+  initCats(); if(currentServiceType) renderServicePage(); renderNotif();
+});
+db.ref("messages").on("value",(snap)=>{
+  const val=snap.val(); allMsgs=[];
+  if(val){ Object.keys(val).forEach(k=>{ allMsgs.push({...val[k], fbId:k}); }); }
+  renderChatList();
 });
 function deleteProvider(fbId){
   if(!isAdmin()){ alert("শুধু অ্যাডমিন ডিলিট করতে পারবে"); return; }
@@ -165,10 +380,11 @@ auth.onAuthStateChanged(u=>{
     $("profilePic").src=u.photoURL||"https://i.pravatar.cc/200?u="+u.uid;
     $("profileNameText").textContent=u.displayName||"User";
     $("pName").value=u.displayName||""; $("pEmail").value=getAllEmails(u).join(", ")||"";
+    if(!$("userChatName").value) $("userChatName").value=u.displayName||"";
   } else {
     $("topLoginBtn").style.display="grid";
   }
-  renderServicePage();
+  renderServicePage(); renderChatList();
 });
 $("btnSubmit").addEventListener("click", async ()=>{
   let vStatus = VEHICLE_TYPES.includes($("fType").value) ? $("fVehicleStatus").value : "";
@@ -183,7 +399,10 @@ $("btnSubmit").addEventListener("click", async ()=>{
   }catch(e){ $("formMsg").textContent=e.message; }
 });
 $("btnSaveProfile").addEventListener("click",()=>{ alert("সেভ হয়েছে: "+$("pName").value); });
+if(localStorage.getItem("myChatName")) $("userChatName").value=localStorage.getItem("myChatName");
+if(localStorage.getItem("myChatPhone")) $("userChatPhone").value=localStorage.getItem("myChatPhone");
 initCats();
 </script>
 </body>
-</html>
+</html> 
+                                                                                                                                                                                                                                                                                                                                                              </nav>                                                                                                                                                                                                                                                                                                                                                                                         
