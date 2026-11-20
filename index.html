@@ -52,7 +52,7 @@
 </style>
 </head>
 <body>
-<div class="topbar"><div class="iconBtn">C</div><b id="logoHome">Bangladesh Service-</b><div class="bellWrap"><button class="iconBtn" id="notifBtn" style="font-size:18px">🔔</button><span class="bellDot" id="notifDot">0</span></div><button class="iconBtn" id="headerProfilePic" style="display:none">P</button><button class="iconBtn" id="topLoginBtn">L</button></div>
+<div class="topbar"><div class="iconBtn">C</div><b id="logoHome">Bangladesh Service-</b><div class="bellWrap"><button class="iconBtn" id="notifBtn" style="font-size:18px">🔔</button><span class="bellDot" id="notifDot" style="display:none">0</span></div><button class="iconBtn" id="headerProfilePic" style="display:none">P</button><button class="iconBtn" id="topLoginBtn">L</button></div>
 
 <div id="notifPanel" class="notifPanel">
 <div class="notifHead"><span>🔔 নোটিফিকেশন - <span id="notifTotal">0 জন</span></span><button onclick="closeNotif()" style="border:0;background:rgba(255,255,255,.25);color:#fff;border-radius:50%;width:28px;height:28px">X</button></div>
@@ -62,7 +62,6 @@
 <button class="tabBtn" id="tabPrivacyBtn" onclick="showNotifTab('privacy')">🔒 প্রাইভেসি</button>
 </div>
 </div>
-
 <div id="notifChatTab" style="flex:1;display:flex;flex-direction:column;overflow:hidden;padding:12px">
 <div id="userChatBox" style="display:none;flex:1;flex-direction:column;overflow:hidden">
 <div style="background:#e6f0ff;border-radius:14px;padding:12px;display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#0a66ff;color:#fff">S</div><div><b>সাব্বির আহমদ (এডমিন)</b><br><small style="color:green">🟢 অনলাইন - যেকোনো সাহায্যের জন্য মেসেজ করুন</small></div></div>
@@ -71,7 +70,6 @@
 <input id="userChatPhone" placeholder="আপনার ফোন - 017..." style="width:100%;padding:11px;border:1px solid #dbe2f5;border-radius:12px;margin-bottom:8px">
 <div style="display:flex;gap:6px;padding-bottom:8px"><input id="userChatInput" placeholder="এডমিনকে মেসেজ লিখুন..." style="flex:1;padding:13px;border:1px solid #dbe2f5;border-radius:25px;outline:none"><button onclick="sendMsgToAdmin()" style="border:0;background:#0a66ff;color:#fff;min-width:50px;height:50px;border-radius:50%;font-size:20px">➤</button></div>
 </div>
-
 <div id="adminChatBox" style="display:none;flex:1;flex-direction:column;overflow:hidden">
 <p style="font-size:12px;color:#666;text-align:center;margin:6px 0">ইমুর মতো - সবাই আপনাকে মেসেজ করবে, আপনি উত্তর দিবেন।</p>
 <div id="adminChatList" style="flex:1;overflow-y:auto"></div>
@@ -83,7 +81,6 @@
 </div>
 </div>
 </div>
-
 <div id="notifPrivacyTab" style="display:none;padding:12px">
 <p style="font-size:13px;color:#666">শুধু এডমিনের জন্য। আগে Gmail দিয়ে লগইন করুন, তারপর কোড দিন।</p>
 <input id="adminCodeInput" type="password" placeholder="এডমিন কোড দিন" style="width:100%;padding:12px;border:1px solid #dbe2f5;border-radius:12px">
@@ -98,6 +95,13 @@
 <div id="page-home" class="app-section active">
 <div class="searchWrap"><span>🔍</span><input id="searchBox" placeholder="সেবা খুঁজুন - ড্রাইভার, ডাক্তার, ইমাম..."></div>
 <div class="hero"><div><b style="font-size:16px">Bangladesh Service-</b><br><small style="color:#6b7280">Bangladesh Service-</small></div><div style="text-align:right"><b id="totalCount" style="font-size:22px;color:#0a66ff">0 জন</b><br><small>সক্রিয়</small></div></div>
+
+<!-- 🆕 ছোট ইমার্জেন্সি - ৯৯৯ আর ১০২ আলাদা, ভুলে চাপ দিলেও কল যাইবো না -->
+<div style="display:flex;gap:8px;margin-top:10px">
+  <a href="tel:999" onclick="return confirm('আপনি কি সত্যিই ৯৯৯ এ ইমার্জেন্সি কল দিতে চান?')" style="flex:1;background:#fff;border:1.5px solid #ff0000;color:#ff0000;border-radius:12px;padding:8px;text-align:center;text-decoration:none;font-size:13px;font-weight:800">🚨 জরুরি - ৯৯৯</a>
+  <a href="tel:102" onclick="return confirm('আপনি কি সত্যিই ফায়ার সার্ভিস ১০২ এ কল দিতে চান?')" style="flex:1;background:#fff;border:1.5px solid #ff6600;color:#ff6600;border-radius:12px;padding:8px;text-align:center;text-decoration:none;font-size:13px;font-weight:800">🔥 ফায়ার - ১০২</a>
+</div>
+
 <div id="catBox" class="catGrid"></div>
 </div>
 <div id="page-register" class="app-section"><div class="formCard"><h3 style="margin:0">নতুন সেবা যোগ করুন</h3><select id="fType"></select><div id="vehicleStatusWrap" style="display:none"><select id="fVehicleStatus"><option value="ontest">🆕 অন-টেস্ট গাড়ি</option><option value="register">✅ রেজিস্টার গাড়ি</option></select></div><input id="fName" placeholder="আপনার নাম"><input id="fAddr" placeholder="ঠিকানা - চরখাই, বিয়ানীবাজার"><input id="fPhone" placeholder="ফোন - 017..."><textarea id="fDetails" placeholder="অভিজ্ঞতা / বিবরণ লিখুন"></textarea><button class="btn b2" id="btnSubmit" style="margin-top:12px">জমা দিন</button><div id="formMsg" style="margin-top:10px;font-weight:700"></div></div></div>
@@ -125,17 +129,26 @@ const ADMIN_UIDS = ["WZxAEADlphY2oRlioV9douWle5I3", "zWrxAbhuVPfp4Wb9UbH4kWHdu55
 const ADMIN_SECRET_CODE = "52021435";
 let adminUnlocked = false;
 let allMsgs = []; let currentChatPhone = "";
+let lastSeenCount = parseInt(localStorage.getItem("lastSeenProviderCount")||"0");
 function getAllEmails(u){ let arr=[]; if(!u) return arr; if(u.email) arr.push(u.email.toLowerCase().trim()); if(u.providerData){ u.providerData.forEach(p=>{ if(p.email) arr.push(p.email.toLowerCase().trim()); }); } return arr; }
 function isAdmin(){ if(!auth.currentUser) return false; let emails=getAllEmails(auth.currentUser); for(let e of emails){ if(ADMIN_EMAILS.includes(e)) return true; } if(ADMIN_UIDS.includes(auth.currentUser.uid)) return true; return false; }
 function $(id){return document.getElementById(id);}
 const SERVICES=[
+["wificall","ওয়াইফাই কল","📶","#e0f7fa"],
 ["driver","ড্রাইভার","🚗","#e7f0ff"],["auto","অটো","🛺","#fff3e0"],["cng","সিএনজি","🚕","#e8f5e9"],["pickup","পিকআপ","🚚","#fce4ec"],["bus","বাস","🚌","#ede7f6"],["truck","ট্রাক","🚛","#f3e5f5"],["bike","বাইক","🏍️","#e0f2f1"],["ambulance","অ্যাম্বুলেন্স","🚑","#ffebee"],
 ["doctor","ডাক্তার","🩺","#e3f2fd"],["nurse","নার্স","👩‍⚕️","#fce4ec"],["pharmacy","ফার্মেসি","💊","#e8f5e9"],["hospital","হাসপাতাল","🏥","#ffebee"],["blood","রক্তদাতা","🩸","#ffebee"],["lab","ল্যাব","🔬","#e0f7fa"],
 ["imam","ইমাম","🕌","#e8f5e9"],["muazzin","মুয়াজ্জিন","🕌","#e0f2f1"],["bokta","বক্তা","🎙️","#fff8e1"],["nurani","নূরানী শিক্ষক","📖","#f1f8e9"],["hafez","হাফেজ","📗","#e8f5e9"],["qari","কারী","📖","#e0f2f1"],["mufti","মুফতি","📜","#fff3e0"],["khatib","খতিব","🕌","#e8f5e9"],
 ["electrician","ইলেকট্রিশিয়ান","💡","#fffde7"],["plumber","প্লাম্বার","🚿","#e1f5fe"],["mason","রাজমিস্ত্রি","🧱","#efebe9"],["painter","রং মিস্ত্রি","🎨","#fce4ec"],["carpenter","কাঠমিস্ত্রি","🪚","#efebe9"],["welder","ওয়েল্ডার","🔧","#e0e0e0"],["mechanic","মেকানিক","⚙️","#e3f2fd"],
 ["tailor","দর্জি","✂️","#f3e5f5"],["barber","নাপিত","💈","#e0f2f1"],["cook","বাবুর্চি","🍳","#fff3e0"],["teacher","শিক্ষক","👨‍🏫","#e8eaf6"],["tutor","প্রাইভেট টিউটর","📚","#e3f2fd"],["coach","কোচ","🏏","#e8f5e9"],["lawyer","উকিল","⚖️","#ede7f6"],
 ["photographer","ফটোগ্রাফার","📷","#f3e5f5"],["decorator","ডেকোরেটর","🎉","#fff8e1"],["it","আইটি সেবা","💻","#e3f2fd"],["web","ওয়েব ডিজাইন","🌐","#e0f7fa"],["mobile","মোবাইল সার্ভিস","📱","#e8f5e9"],
-["farmer","কৃষক","🌾","#e8f5e9"],["shop","দোকানদার","🛒","#fff3e0"],["house","বাড়ি ভাড়া","🏠","#e3f2fd"],["land","জমি বিক্রি","🗺️","#efebe9"],["maid","কাজের বুয়া","🧹","#fce4ec"],["guard","গার্ড","💂","#e0e0e0"],["courier","কুরিয়ার","📦","#fff8e1"],["rentcar","গাড়ি ভাড়া","🚗","#e7f0ff"],["hajj","হজ্জ গাইড","✈️","#e8f5e9"]
+["farmer","কৃষক","🌾","#e8f5e9"],["shop","দোকানদার","🛒","#fff3e0"],["house","বাড়ি ভাড়া","🏠","#e3f2fd"],["land","জমি বিক্রি","🗺️","#efebe9"],["maid","কাজের বুয়া","🧹","#fce4ec"],["guard","গার্ড","💂","#e0e0e0"],["courier","কুরিয়ার","📦","#fff8e1"],["rentcar","গাড়ি ভাড়া","🚗","#e7f0ff"],["hajj","হজ্জ গাইড","✈️","#e8f5e9"],
+["cow","গরু","🐄","#e8f5e9"],["goat","ছাগল","🐐","#f1f8e9"],["duck","হাঁস","🦆","#e0f7fa"],["hen","মুরগি","🐔","#fff8e1"],["buffalo","মহিষ","🐃","#efebe9"],["pigeon","কবুতর","🕊️","#e3f2fd"],["vet","পশুর ডাক্তার","🐾","#ffebee"],
+["cardriving","কার ড্রাইভিং শিখুন","🚘","#e7f0ff"],["bikedriving","বাইক ড্রাইভিং শিখুন","🏍️","#e0f2f1"],
+["tractor","ট্রাক্টর ভাড়া","🚜","#e8f5e9"],["harvester","ধান কাটা মেশিন","🌾","#fff3e0"],["fish","মাছের পোনা","🐟","#e1f5fe"],["agrilabour","কৃষি শ্রমিক","🧑‍🌾","#f1f8e9"],["soilcut","মাটি কাটা / পুকুর খনন","⛏️","#efebe9"],
+["lodginghujur","লজিং হুজুর","🕌","#e8f5e9"],["lodgingmaster","লজিং মাস্টার","👨‍🏫","#e8eaf6"],
+["quraankhatam","কুরআন খতম","📖","#f1f8e9"],["quranTeacher","কুরআন শিক্ষক","📗","#e8f5e9"],
+["mathteacher","অংক টিচার","➗","#e3f2fd"],["banglateacher","বাংলা টিচার","📝","#fff3e0"],["englishteacher","ইংরেজি টিচার","🔤","#e0f7fa"],["arabicteacher","আরবি টিচার","📜","#fff8e1"],["scienceteacher","বিজ্ঞান টিচার","🔬","#e0f7fa"],["ictteacher","আইসিটি টিচার","💻","#e3f2fd"],
+["computer","কম্পিউটার শিখুন","🖥️","#e3f2fd"],["jobapply","চাকরির আবেদন","📋","#fff8e1"],["cv","সিভি বানানো","📄","#e8eaf6"],["passport","পাসপোর্ট / ভিসা","🛂","#e0f7fa"],["birthcert","জন্ম নিবন্ধন","🧾","#fff3e0"],["photocopy","ফটোকপি / প্রিন্ট","🖨️","#f3e5f5"]
 ];
 const VEHICLE_TYPES=["driver","auto","cng","pickup","bus","truck","bike","ambulance","rentcar"];
 let providers=[]; let currentServiceType=""; let currentVehicleFilter="ontest";
@@ -143,22 +156,11 @@ function hideAllSections(){document.querySelectorAll(".app-section").forEach(e=>
 function goHome(){$("page-service").style.display="none";hideAllSections();$("page-home").classList.add("active");$("nav-home").classList.add("active");}
 function goPage(n){$("page-service").style.display="none";hideAllSections();let s=$("page-"+n);if(s)s.classList.add("active");let nav=$("nav-"+n);if(nav)nav.classList.add("active");}
 function getCount(t){return providers.filter(p=>p.type===t).length;}
-function getVehicleStatus(p){
-  if(p.vehicleStatus) return p.vehicleStatus;
-  let d=(p.details||"").toLowerCase();
-  if(d.includes("রেজিস্টার") || d.includes("register")) return "register";
-  return "ontest";
-}
-function updateVehicleStatusVisibility(){
-  let t=$("fType").value;
-  $("vehicleStatusWrap").style.display = VEHICLE_TYPES.includes(t) ? "block" : "none";
-}
+function getVehicleStatus(p){ if(p.vehicleStatus) return p.vehicleStatus; let d=(p.details||"").toLowerCase(); if(d.includes("রেজিস্টার") || d.includes("register")) return "register"; return "ontest"; }
+function updateVehicleStatusVisibility(){ let t=$("fType").value; $("vehicleStatusWrap").style.display = VEHICLE_TYPES.includes(t) ? "block" : "none"; }
 function initCats(){
   let h="";
-  for(let i=0;i<SERVICES.length;i++){
-    let s=SERVICES[i]; let c=getCount(s[0]);
-    h+='<div class="cat" data-type="'+s[0]+'"><span class="count">'+c+'</span><div class="ico" style="background:'+s[3]+'">'+s[2]+'</div><div class="name">'+s[1]+'</div></div>';
-  }
+  for(let i=0;i<SERVICES.length;i++){ let s=SERVICES[i]; let c=getCount(s[0]); h+='<div class="cat" data-type="'+s[0]+'"><span class="count">'+c+'</span><div class="ico" style="background:'+s[3]+'">'+s[2]+'</div><div class="name">'+s[1]+'</div></div>'; }
   $("catBox").innerHTML=h;
   document.querySelectorAll(".cat").forEach(el=>el.addEventListener("click",function(){openServicePage(this.getAttribute("data-type"));}));
   let o=""; for(let i=0;i<SERVICES.length;i++){o+='<option value="'+SERVICES[i][0]+'">'+SERVICES[i][1]+'</option>';}
@@ -168,11 +170,6 @@ function initCats(){
 }
 function openServicePage(t){let svc=SERVICES.find(x=>x[0]===t);if(!svc)return;currentServiceType=t;currentVehicleFilter="ontest";document.querySelectorAll("#vehicleFilterBar button").forEach(b=>b.classList.toggle("active",b.dataset.filter==="ontest"));$("vehicleFilterBar").style.display=VEHICLE_TYPES.includes(t)?"flex":"none";$("serviceTitle").textContent=svc[1];$("page-service").style.display="flex";renderServicePage();}
 function closeServicePage(){$("page-service").style.display="none";}
-function makeCodeForAll(){
-  let used = providers.map(p=>String(p.driverCode||""));
-  let c; do{ c = String(Math.floor(1000+Math.random()*9000)); }while(used.includes(c));
-  return c;
-}
 function showNotifTab(tab){
   $("notifChatTab").style.display = tab==="chat" ? "flex" : "none";
   $("notifPrivacyTab").style.display = tab==="privacy" ? "block" : "none";
@@ -181,185 +178,99 @@ function showNotifTab(tab){
   if(tab==="chat") renderChatList();
   if(tab==="privacy") renderPrivacy();
 }
-// ===== IMO STYLE লম্বা চ্যাট লিস্ট =====
-function getMyPhone(){
-  let p = ($("userChatPhone").value||"").trim() || ($("pPhone").value||"").trim();
-  return p;
-}
+function getMyPhone(){ let p = ($("userChatPhone").value||"").trim() || ($("pPhone").value||"").trim(); return p; }
 function renderChatList(){
-  if(isAdmin()){
-    $("adminChatBox").style.display="flex"; $("userChatBox").style.display="none";
-    renderAdminChatList();
-  } else {
-    $("userChatBox").style.display="flex"; $("adminChatBox").style.display="none";
-    if(auth.currentUser && !$("userChatName").value) $("userChatName").value = auth.currentUser.displayName||"";
-    renderUserChat();
-  }
+  if(isAdmin()){ $("adminChatBox").style.display="flex"; $("userChatBox").style.display="none"; renderAdminChatList(); }
+  else { $("userChatBox").style.display="flex"; $("adminChatBox").style.display="none"; if(auth.currentUser && !$("userChatName").value) $("userChatName").value = auth.currentUser.displayName||""; renderUserChat(); }
 }
 function renderUserChat(){
-  let myPhone = getMyPhone();
-  let box = $("userChatMessages");
+  let myPhone = getMyPhone(); let box = $("userChatMessages");
   if(!myPhone){ box.innerHTML='<div style="text-align:center;color:#666;font-size:13px;padding:14px">নিচে নাম + ফোন দিয়ে মেসেজ করুন, খালি এডমিন দেখবে।</div>'; return; }
   let mine = allMsgs.filter(m=>m.phone===myPhone).sort((a,b)=>a.time-b.time);
-  if(mine.length===0){ box.innerHTML='<div style="text-align:center;color:#666;font-size:13px;padding:14px">এখনো কোনো মেসেজ নাই।<br>লিখুন - "আসসালামু আলাইকুম, সাহায্য লাগবে"</div>'; return; }
-  let h="";
-  mine.forEach(m=>{
-    if(m.from==="admin") h+=`<div class="chatBubble chatOther"><b>এডমিন:</b><br>${m.text}</div>`;
-    else h+=`<div class="chatBubble chatMe">${m.text}</div>`;
-  });
+  if(mine.length===0){ box.innerHTML='<div style="text-align:center;color:#666;font-size:13px;padding:14px">এখনো কোনো মেসেজ নাই।</div>'; return; }
+  let h=""; mine.forEach(m=>{ if(m.from==="admin") h+=`<div class="chatBubble chatOther"><b>এডমিন:</b><br>${m.text}</div>`; else h+=`<div class="chatBubble chatMe">${m.text}</div>`; });
   box.innerHTML=h; box.scrollTop=box.scrollHeight;
 }
-function renderAdminChatList(){
+  function renderAdminChatList(){
   let groups={};
   allMsgs.forEach(m=>{ if(!groups[m.phone]) groups[m.phone]={name:m.name, phone:m.phone, last:m}; if(m.time>groups[m.phone].last.time) groups[m.phone].last=m; });
-  let keys=Object.keys(groups);
-  let html="";
+  let keys=Object.keys(groups); let html="";
   if(keys.length===0) html='<div style="padding:16px;text-align:center;color:#666">এখনো কেউ মেসেজ করে নাই</div>';
-  else keys.forEach(k=>{
-    let g=groups[k];
-    let ini=(g.name||"A").trim().charAt(0).toUpperCase();
-    html+=`<div class="notifItem" onclick="openAdminChat('${g.phone}')"><div class="avatar">${ini}</div><div style="flex:1"><b>${g.name}</b><br><small>📞 ${g.phone}</small><br><small style="color:#666">${g.last.from==="admin"?"আপনি: ":""}${g.last.text}</small></div><span style="color:#0a66ff;font-weight:900;font-size:20px">›</span></div>`;
-  });
-  $("adminChatList").innerHTML=html;
-  $("adminChatRoom").style.display="none";
-  $("adminChatList").style.display="block";
-  $("adminChatBox").style.display="flex";
+  else keys.forEach(k=>{ let g=groups[k]; let ini=(g.name||"A").trim().charAt(0).toUpperCase(); html+=`<div class="notifItem" onclick="openAdminChat('${g.phone}')"><div class="avatar">${ini}</div><div style="flex:1"><b>${g.name}</b><br><small>📞 ${g.phone}</small><br><small style="color:#666">${g.last.from==="admin"?"আপনি: ":""}${g.last.text}</small></div><span style="color:#0a66ff;font-weight:900;font-size:20px">›</span></div>`; });
+  $("adminChatList").innerHTML=html; $("adminChatRoom").style.display="none"; $("adminChatList").style.display="block"; $("adminChatBox").style.display="flex";
 }
 function openAdminChat(phone){
-  currentChatPhone=phone;
-  let g = allMsgs.filter(m=>m.phone===phone);
-  let name = g.length?g[0].name:phone;
+  currentChatPhone=phone; let g = allMsgs.filter(m=>m.phone===phone); let name = g.length?g[0].name:phone;
   $("adminChatRoomTitle").textContent = name + " - " + phone;
-  $("adminChatList").style.display="none";
-  $("adminChatRoom").style.display="flex";
-  renderAdminRoom();
+  $("adminChatList").style.display="none"; $("adminChatRoom").style.display="flex"; renderAdminRoom();
 }
 function renderAdminRoom(){
-  let msgs = allMsgs.filter(m=>m.phone===currentChatPhone).sort((a,b)=>a.time-b.time);
-  let h="";
-  msgs.forEach(m=>{
-    if(m.from==="admin") h+=`<div class="chatBubble chatMe">${m.text}</div>`;
-    else h+=`<div class="chatBubble chatOther"><b>${m.name}:</b><br>${m.text}</div>`;
-  });
-  $("adminChatMessages").innerHTML=h||'<div style="text-align:center;color:#666">কোনো মেসেজ নাই</div>';
-  $("adminChatMessages").scrollTop=$("adminChatMessages").scrollHeight;
+  let msgs = allMsgs.filter(m=>m.phone===currentChatPhone).sort((a,b)=>a.time-b.time); let h="";
+  msgs.forEach(m=>{ if(m.from==="admin") h+=`<div class="chatBubble chatMe">${m.text}</div>`; else h+=`<div class="chatBubble chatOther"><b>${m.name}:</b><br>${m.text}</div>`; });
+  $("adminChatMessages").innerHTML=h||'<div style="text-align:center;color:#666">কোনো মেসেজ নাই</div>'; $("adminChatMessages").scrollTop=$("adminChatMessages").scrollHeight;
 }
 function backToChatList(){ renderAdminChatList(); }
 async function sendMsgToAdmin(){
-  let text=$("userChatInput").value.trim();
-  let name=$("userChatName").value.trim();
-  let phone=$("userChatPhone").value.trim();
-  if(!name||!phone){ alert("আগে আপনার নাম + ফোন দিন"); return; }
-  if(!text){ return; }
+  let text=$("userChatInput").value.trim(); let name=$("userChatName").value.trim(); let phone=$("userChatPhone").value.trim();
+  if(!name||!phone){ alert("আগে আপনার নাম + ফোন দিন"); return; } if(!text){ return; }
   await db.ref("messages").push({name:name, phone:phone, text:text, from:"user", time:Date.now()});
-  $("userChatInput").value="";
-  localStorage.setItem("myChatName", name); localStorage.setItem("myChatPhone", phone);
-  // অটো রিপ্লাই - এডমিনের পক্ষ থেকে সাথে সাথে
-  setTimeout(async ()=>{
-    let autoText = "আসসালামু আলাইকুম "+name+" ভাই! ❤️ আপনার মেসেজ পাইছি। এডমিন সাব্বির আহমদ একটু পরেই আপনাকে উত্তর দিবেন। জরুরি হইলে কল করুন - 01606582282";
-    await db.ref("messages").push({name:name, phone:phone, text:autoText, from:"admin", time:Date.now()+1000});
-  }, 800);
+  $("userChatInput").value=""; localStorage.setItem("myChatName", name); localStorage.setItem("myChatPhone", phone);
+  setTimeout(async ()=>{ let autoText = "আসসালামু আলাইকুম "+name+" ভাই! ❤️ আপনার মেসেজ পাইছি। এডমিন সাব্বির আহমদ একটু পরেই আপনাকে উত্তর দিবেন। জরুরি হইলে কল করুন - 01606582282"; await db.ref("messages").push({name:name, phone:phone, text:autoText, from:"admin", time:Date.now()+1000}); }, 800);
 }
 async function sendAdminReply(){
-  let text=$("adminChatInput").value.trim();
-  if(!text||!currentChatPhone) return;
-  let g = allMsgs.filter(m=>m.phone===currentChatPhone);
-  let name = g.length?g[0].name:"";
-  await db.ref("messages").push({name:name, phone:currentChatPhone, text:text, from:"admin", time:Date.now()});
-  $("adminChatInput").value="";
+  let text=$("adminChatInput").value.trim(); if(!text||!currentChatPhone) return;
+  let g = allMsgs.filter(m=>m.phone===currentChatPhone); let name = g.length?g[0].name:"";
+  await db.ref("messages").push({name:name, phone:currentChatPhone, text:text, from:"admin", time:Date.now()}); $("adminChatInput").value="";
 }
 function renderNotif(){
-  $("notifDot").textContent = providers.length;
-  $("notifDot").style.display = providers.length>0 ? "grid" : "none";
-  $("notifTotal").textContent = providers.length + " জন";
-  renderChatList();
-  if(adminUnlocked) renderPrivacy();
+  let newCount = providers.length - lastSeenCount; if(newCount < 0) newCount = 0;
+  if(newCount > 0){ $("notifDot").textContent = newCount; $("notifDot").style.display = "grid"; } else { $("notifDot").style.display = "none"; }
+  $("notifTotal").textContent = providers.length + " জন"; renderChatList(); if(adminUnlocked) renderPrivacy();
 }
 async function togglePaid(fbId){
   if(!isAdmin()){ alert("আগে আপনার Gmail দিয়ে লগইন করুন"); return; }
   if(!adminUnlocked){ alert("আগে প্রাইভেসি কোড দিয়ে ঢুকুন"); return; }
-  let p = providers.find(x=>x.fbId===fbId);
-  if(!p) return;
-  let newVal = !p.paidActive;
-  await db.ref("providers/"+fbId).update({paidActive: newVal, status: newVal ? "free" : "busy", lastActive: Date.now()});
+  let p = providers.find(x=>x.fbId===fbId); if(!p) return;
+  let newVal = !p.paidActive; await db.ref("providers/"+fbId).update({paidActive: newVal, status: newVal ? "free" : "busy", lastActive: Date.now()});
 }
 function checkAdminCode(){
-  if(!isAdmin()){
-    $("adminCodeMsg").textContent = "❌ আগে আপনার Gmail দিয়ে লগইন করতে হবে!";
-    $("adminCodeMsg").style.color = "red";
-    return;
-  }
+  if(!isAdmin()){ $("adminCodeMsg").textContent = "❌ আগে আপনার Gmail দিয়ে লগইন করতে হবে!"; $("adminCodeMsg").style.color = "red"; return; }
   let v = $("adminCodeInput").value.trim();
-  if(v === ADMIN_SECRET_CODE){
-    adminUnlocked = true;
-    $("adminCodeMsg").textContent = "✅ স্বাগতম এডমিন! এখন সিএনজি পেইজে গিয়ে টিক দিতে পারবেন।";
-    $("adminCodeMsg").style.color = "green";
-    renderPrivacy();
-    if(currentServiceType) renderServicePage();
-    renderChatList();
-  } else {
-    $("adminCodeMsg").textContent = "❌ কোড ভুল হয়েছে!";
-    $("adminCodeMsg").style.color = "red";
-  }
+  if(v === ADMIN_SECRET_CODE){ adminUnlocked = true; $("adminCodeMsg").textContent = "✅ স্বাগতম এডমিন!"; $("adminCodeMsg").style.color = "green"; renderPrivacy(); if(currentServiceType) renderServicePage(); renderChatList(); }
+  else { $("adminCodeMsg").textContent = "❌ কোড ভুল হয়েছে!"; $("adminCodeMsg").style.color = "red"; }
 }
 function renderPrivacy(){
   if(!adminUnlocked || !isAdmin()){ $("privacyList").innerHTML = ""; return; }
   let sorted = [...providers].sort((a,b)=> (b.paidActive?1:0)-(a.paidActive?1:0));
   let html = '<p style="font-size:13px;font-weight:800">👇 এখান থেকে অনলাইন / অফলাইন দিন</p>';
-  sorted.forEach(p=>{
-    let isOnline = p.status==="free";
-    html += `<div class="notifItem"><div style="flex:1"><b>${p.name}</b><br><small>${p.phone} - ${isOnline ? "🟢 অনলাইন" : "🔴 অফলাইন"}</small></div><button onclick="setOnline('${p.fbId}','${isOnline?"busy":"free"}')" style="border:0;padding:8px 12px;border-radius:20px;font-weight:800;color:#fff;background:${isOnline?"#ef4444":"#22c55e"}">${isOnline?"অফলাইন করুন":"অনলাইন করুন"}</button></div>`;
-  });
+  sorted.forEach(p=>{ let isOnline = p.status==="free"; html += `<div class="notifItem"><div style="flex:1"><b>${p.name}</b><br><small>${p.phone} - ${isOnline ? "🟢 অনলাইন" : "🔴 অফলাইন"}</small></div><button onclick="setOnline('${p.fbId}','${isOnline?"busy":"free"}')" style="border:0;padding:8px 12px;border-radius:20px;font-weight:800;color:#fff;background:${isOnline?"#ef4444":"#22c55e"}">${isOnline?"অফলাইন করুন":"অনলাইন করুন"}</button></div>`; });
   $("privacyList").innerHTML = html;
 }
-async function setOnline(fbId, status){
-  if(!isAdmin() || !adminUnlocked){ alert("আগে এডমিন কোড দিয়ে ঢুকুন"); return; }
-  await db.ref("providers/"+fbId).update({status: status, lastActive: Date.now()});
+async function setOnline(fbId, status){ if(!isAdmin() || !adminUnlocked){ alert("আগে এডমিন কোড দিয়ে ঢুকুন"); return; } await db.ref("providers/"+fbId).update({status: status, lastActive: Date.now()}); }
+function openNotif(){
+  lastSeenCount = providers.length; localStorage.setItem("lastSeenProviderCount", String(lastSeenCount));
+  $("notifDot").style.display = "none"; $("notifPanel").style.display="flex"; renderNotif();
 }
-function openNotif(){ $("notifPanel").style.display="flex"; renderNotif(); }
 function closeNotif(){ $("notifPanel").style.display="none"; }
 $("notifBtn").addEventListener("click", openNotif);
 function renderServicePage(){
   let q=($("serviceSearchBox").value||"").toLowerCase();
-  let list=providers.filter(p=>{if(p.type!==currentServiceType)return false;
-    if(VEHICLE_TYPES.includes(currentServiceType)){
-      if(getVehicleStatus(p) !== currentVehicleFilter) return false;
-    }
-    if(!q)return true;return (p.name+p.address+p.phone+(p.details||"")).toLowerCase().includes(q);});
+  let list=providers.filter(p=>{if(p.type!==currentServiceType)return false; if(VEHICLE_TYPES.includes(currentServiceType)){ if(getVehicleStatus(p) !== currentVehicleFilter) return false; } if(!q)return true;return (p.name+p.address+p.phone+(p.details||"")).toLowerCase().includes(q);});
   list.sort((a,b)=> (b.paidActive?1:0)-(a.paidActive?1:0));
-  $("serviceCount").textContent=list.length+" জন";
-  let html="";
+  $("serviceCount").textContent=list.length+" জন"; let html="";
   for(let p of list){
-    let ini=(p.name||"C").trim().charAt(0).toUpperCase();
-    let safePhone=(p.phone||"").replace(/[^0-9]/g,"");
-    let callLink="tel:"+safePhone;
-    let waLink="https://wa.me/88"+safePhone;
+    let ini=(p.name||"C").trim().charAt(0).toUpperCase(); let safePhone=(p.phone||"").replace(/[^0-9]/g,""); let callLink="tel:"+safePhone; let waLink="https://wa.me/88"+safePhone;
     let blueTick = p.paidActive ? '<span style="background:#1877F2;color:#fff;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:900;position:absolute;bottom:-2px;right:-2px;border:2px solid #fff">✓</span>' : "";
-    let adminTick = "";
-    if(adminUnlocked && isAdmin()){
-      adminTick = `<div onclick="togglePaid('${p.fbId}')" style="position:absolute;top:10px;right:10px;width:28px;height:28px;border:2px solid #1877F2;border-radius:6px;background:${p.paidActive?"#1877F2":"#fff"};color:#fff;display:grid;place-items:center;font-weight:900;cursor:pointer;z-index:5">${p.paidActive?"✓":""}</div>`;
-    }
+    let adminTick = ""; if(adminUnlocked && isAdmin()){ adminTick = `<div onclick="togglePaid('${p.fbId}')" style="position:absolute;top:10px;right:10px;width:28px;height:28px;border:2px solid #1877F2;border-radius:6px;background:${p.paidActive?"#1877F2":"#fff"};color:#fff;display:grid;place-items:center;font-weight:900;cursor:pointer;z-index:5">${p.paidActive?"✓":""}</div>`; }
     let vipBadge = p.paidActive ? '<div style="background:#fef3c7;padding:6px 10px;border-radius:10px;font-size:12px;font-weight:800;margin-top:6px">⭐ টাকা দিয়া একটিভ - সবার উপরে</div>' : "";
     let delBtn = isAdmin() ? '<button class="btn" onclick="deleteProvider(\''+p.fbId+'\')" style="width:100%;margin-top:10px;background:#ffebee;color:#d32f2f;border:1px solid #ffcdd2">🗑️ ডিলিট করুন</button>' : '';
     html+='<div class="card" style="flex-direction:column;align-items:stretch;position:relative">'+adminTick+'<div style="display:flex;gap:10px;align-items:center"><div class="avatar">'+ini+blueTick+'</div><div style="flex:1"><b>'+p.name+'</b><br><small>📍 '+p.address+'</small><br><small>📞 '+p.phone+'</small></div></div>'+vipBadge+'<div style="background:#f5f7fb;border-radius:12px;padding:10px;margin-top:8px;font-size:13px">'+(p.details||"বিবরণ নাই")+'</div><div style="display:flex;gap:8px;margin-top:12px"><a href="'+callLink+'" style="flex:1;text-decoration:none"><button class="btn b2" style="width:100%">📞 কল করুন</button></a><a href="'+waLink+'" target="_blank" style="flex:1;text-decoration:none"><button class="btn b1" style="width:100%">💬 WhatsApp</button></a></div>'+delBtn+'</div>';
   }
   $("serviceProviderCards").innerHTML=html||'<div style="padding:24px;text-align:center;color:#6b7280">এখনো কেউ নেই</div>';
 }
-db.ref("providers").on("value",(snap)=>{
-  const val=snap.val(); providers=[];
-  if(val){ Object.keys(val).forEach(k=>{ providers.push({...val[k], fbId:k}); }); }
-  initCats(); if(currentServiceType) renderServicePage(); renderNotif();
-});
-db.ref("messages").on("value",(snap)=>{
-  const val=snap.val(); allMsgs=[];
-  if(val){ Object.keys(val).forEach(k=>{ allMsgs.push({...val[k], fbId:k}); }); }
-  renderChatList();
-});
-function deleteProvider(fbId){
-  if(!isAdmin()){ alert("শুধু অ্যাডমিন ডিলিট করতে পারবে"); return; }
-  if(!confirm("আপনি কি সত্যিই এই সেবাটি ডিলিট করতে চান?")) return;
-  db.ref("providers/"+fbId).remove().then(()=>{ alert("ডিলিট হয়ে গেছে"); }).catch(e=>alert(e.message));
-}
+db.ref("providers").on("value",(snap)=>{ const val=snap.val(); providers=[]; if(val){ Object.keys(val).forEach(k=>{ providers.push({...val[k], fbId:k}); }); } initCats(); if(currentServiceType) renderServicePage(); renderNotif(); });
+db.ref("messages").on("value",(snap)=>{ const val=snap.val(); allMsgs=[]; if(val){ Object.keys(val).forEach(k=>{ allMsgs.push({...val[k], fbId:k}); }); } renderChatList(); });
+function deleteProvider(fbId){ if(!isAdmin()){ alert("শুধু অ্যাডমিন ডিলিট করতে পারবে"); return; } if(!confirm("আপনি কি সত্যিই এই সেবাটি ডিলিট করতে চান?")) return; db.ref("providers/"+fbId).remove().then(()=>{ alert("ডিলিট হয়ে গেছে"); }).catch(e=>alert(e.message)); }
 document.querySelectorAll("#vehicleFilterBar button").forEach(btn=>{btn.addEventListener("click",function(){currentVehicleFilter=this.dataset.filter;document.querySelectorAll("#vehicleFilterBar button").forEach(b=>b.classList.remove("active"));this.classList.add("active");renderServicePage();});});
 $("searchBox").addEventListener("input",function(){let q=this.value.toLowerCase();document.querySelectorAll(".cat").forEach(el=>{let t=el.getAttribute("data-type");let name=SERVICES.find(s=>s[0]===t)[1].toLowerCase();el.style.display=name.includes(q)||t.includes(q)?"flex":"none";});});
 $("serviceSearchBox").addEventListener("input",renderServicePage);
@@ -374,16 +285,8 @@ $("btnGoogle").addEventListener("click",()=>{ let p=new firebase.auth.GoogleAuth
 $("btnLogout").addEventListener("click",()=>{auth.signOut(); location.reload();});
 $("fType").addEventListener("change",updateVehicleStatusVisibility);
 auth.onAuthStateChanged(u=>{
-  if(u){
-    $("topLoginBtn").style.display="none";
-    let hp=$("headerProfilePic"); hp.style.display="grid"; hp.textContent=(u.displayName||"P").charAt(0).toUpperCase();
-    $("profilePic").src=u.photoURL||"https://i.pravatar.cc/200?u="+u.uid;
-    $("profileNameText").textContent=u.displayName||"User";
-    $("pName").value=u.displayName||""; $("pEmail").value=getAllEmails(u).join(", ")||"";
-    if(!$("userChatName").value) $("userChatName").value=u.displayName||"";
-  } else {
-    $("topLoginBtn").style.display="grid";
-  }
+  if(u){ $("topLoginBtn").style.display="none"; let hp=$("headerProfilePic"); hp.style.display="grid"; hp.textContent=(u.displayName||"P").charAt(0).toUpperCase(); $("profilePic").src=u.photoURL||"https://i.pravatar.cc/200?u="+u.uid; $("profileNameText").textContent=u.displayName||"User"; $("pName").value=u.displayName||""; $("pEmail").value=getAllEmails(u).join(", ")||""; if(!$("userChatName").value) $("userChatName").value=u.displayName||""; }
+  else { $("topLoginBtn").style.display="grid"; }
   renderServicePage(); renderChatList();
 });
 $("btnSubmit").addEventListener("click", async ()=>{
@@ -391,12 +294,7 @@ $("btnSubmit").addEventListener("click", async ()=>{
   const data={ type:$("fType").value, vehicleStatus: vStatus, name:$("fName").value.trim(), address:$("fAddr").value.trim(), phone:$("fPhone").value.trim(), details:$("fDetails").value.trim(), ownerUid: auth.currentUser?auth.currentUser.uid:"guest_"+Date.now(), createdAt: Date.now() };
   if(!data.name||!data.phone){ $("formMsg").textContent="নাম ও ফোন দিন"; return; }
   $("formMsg").textContent="জমা হচ্ছে...";
-  try{
-    await db.ref("providers").push(data);
-    $("formMsg").textContent="জমা হয়েছে!";
-    $("fName").value=""; $("fPhone").value=""; $("fAddr").value=""; $("fDetails").value="";
-    setTimeout(()=>goHome(),900);
-  }catch(e){ $("formMsg").textContent=e.message; }
+  try{ await db.ref("providers").push(data); $("formMsg").textContent="জমা হয়েছে!"; $("fName").value=""; $("fPhone").value=""; $("fAddr").value=""; $("fDetails").value=""; setTimeout(()=>goHome(),900); }catch(e){ $("formMsg").textContent=e.message; }
 });
 $("btnSaveProfile").addEventListener("click",()=>{ alert("সেভ হয়েছে: "+$("pName").value); });
 if(localStorage.getItem("myChatName")) $("userChatName").value=localStorage.getItem("myChatName");
@@ -404,5 +302,4 @@ if(localStorage.getItem("myChatPhone")) $("userChatPhone").value=localStorage.ge
 initCats();
 </script>
 </body>
-</html> 
-                                                                                                                                                                                                                                                                                                                                                              </nav>                                                                                                                                                                                                                                                                                                                                                                                         
+</html>
