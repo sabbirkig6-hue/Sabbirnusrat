@@ -123,4 +123,87 @@ $("btnSubmit").addEventListener("click",async()=>{let vStatus=VEHICLE_TYPES.incl
 $("btnSaveProfile").addEventListener("click",()=>{alert("সেভ হয়েছে: "+$("pName").value);});
 if(localStorage.getItem("myChatName"))$("userChatName").value=localStorage.getItem("myChatName");if(localStorage.getItem("myChatPhone"))$("userChatPhone").value=localStorage.getItem("myChatPhone");
 initCats();
+</script> <!-- ===== টিকা নোটিশ বাটন - সব একসাথে ===== -->
+<style>
+.tikaBox{background:#fff;border-radius:18px;padding:14px;margin-top:12px;box-shadow:0 4px 18px rgba(0,0,0,.06);border:2px solid #ff3b30}
+.tikaItem{background:#fff5f5;border:1px solid #ffcccc;border-radius:14px;padding:12px;margin-top:10px}
+.tikaPinInput{width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px;text-align:center;font-size:18px;font-weight:900;letter-spacing:5px}
+</style>
+
+<!-- হোমে টিকা বক্স দেখানোর জন্য এই div টা -->
+<!-- এইটা <div id="catBox"> এর উপরে বসাবেন -->
+<div class="tikaBox" id="tikaHomeBox">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <b style="font-size:16px">📢 টিকা নোটিশ</b>
+    <span id="tikaCount" style="background:#ff3b30;color:#fff;font-size:11px;padding:3px 8px;border-radius:20px">0 টা নোটিশ</span>
+  </div>
+  <div id="tikaList"><p style="color:#666;font-size:13px;margin:8px 0 0">এখনো কোনো টিকা নোটিশ আসে নাই।</p></div>
+  <button onclick="openTikaAdmin()" style="width:100%;margin-top:10px;border:0;background:#ff3b30;color:#fff;border-radius:12px;padding:11px;font-weight:800">🔒 এডমিন - নোটিশ দিন (পিন লাগবো)</button>
+</div>
+
+<!-- নোটিশ দেওয়ার পপআপ -->
+<div id="tikaAdminSheet" style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:none;align-items:flex-end">
+  <div style="background:#fff;width:100%;max-height:90vh;border-radius:20px 20px 0 0;padding:18px;overflow:auto">
+    <div style="display:flex;justify-content:space-between"><b>📢 টিকা নোটিশ দিন</b><button onclick="closeTikaAdmin()" style="border:0;background:#eef2ff;width:30px;height:30px;border-radius:50%;font-weight:900">X</button></div>
+    <p style="font-size:13px;color:#666">শুধু আপনি পিন দিয়া নোটিশ দিতে পারবেন। অন্য কেউ পারবো না।</p>
+    <input id="tikaPin" type="password" inputmode="numeric" placeholder="পিন দিন - 908070" maxlength="6" style="width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px;text-align:center;font-size:18px;font-weight:900;letter-spacing:5px">
+    <div id="tikaPinMsg" style="text-align:center;font-weight:800;margin-top:8px;color:red"></div>
+    <div id="tikaForm" style="display:none">
+      <input id="tikaTitle" placeholder="📌 শিরোনাম - যেমন: বাঘা স্কুলে টিকা" style="width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px">
+      <input id="tikaDate" type="date" style="width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px">
+      <input id="tikaPlace" placeholder="📍 কোথায় - যেমন: বাঘা প্রাইমারি স্কুল" style="width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px">
+      <textarea id="tikaMsg" placeholder="✍️ বিস্তারিত লিখুন - কয়টা বাজে, কাদের টিকা..." style="width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px"></textarea>
+      <button onclick="sendTikaNotice()" style="width:100%;margin-top:12px;border:0;background:#ff3b30;color:#fff;border-radius:12px;padding:14px;font-weight:800">📢 সবাইরে নোটিশ পাঠান</button>
+      <div id="tikaSendMsg" style="text-align:center;font-weight:800;margin-top:8px"></div>
+    </div>
+    <div style="margin-top:16px"><b>আগের নোটিশ</b><div id="tikaAdminList"></div></div>
+  </div>
+</div>
+
+<script>
+// ===== টিকা নোটিশ - পিন 908070 =====
+const TIKA_PIN = "908070";
+let tikaNotices = [];
+function openTikaAdmin(){ document.getElementById("tikaAdminSheet").style.display="flex"; document.getElementById("tikaPin").value=""; document.getElementById("tikaPinMsg").textContent=""; document.getElementById("tikaForm").style.display="none"; renderTikaAdminList(); }
+function closeTikaAdmin(){ document.getElementById("tikaAdminSheet").style.display="none"; }
+document.getElementById("tikaPin").addEventListener("input", function(){
+  if(this.value === TIKA_PIN){ document.getElementById("tikaPinMsg").textContent="✅ পিন ঠিক আছে ভাই!"; document.getElementById("tikaPinMsg").style.color="green"; document.getElementById("tikaForm").style.display="block"; }
+  else { document.getElementById("tikaForm").style.display="none"; if(this.value.length===6) document.getElementById("tikaPinMsg").textContent="❌ পিন ভুল!"; }
+});
+async function sendTikaNotice(){
+  if(document.getElementById("tikaPin").value !== TIKA_PIN){ alert("আগে সঠিক পিন দিন!"); return; }
+  let data = { title: document.getElementById("tikaTitle").value.trim(), date: document.getElementById("tikaDate").value, place: document.getElementById("tikaPlace").value.trim(), msg: document.getElementById("tikaMsg").value.trim(), time: Date.now() };
+  if(!data.title || !data.msg){ alert("শিরোনাম আর মেসেজ দিন ভাই"); return; }
+  document.getElementById("tikaSendMsg").textContent="পাঠানো হচ্ছে...";
+  await db.ref("tikaNotices").push(data);
+  document.getElementById("tikaSendMsg").textContent="✅ সবাইর ফোনে চলে গেছে!";
+  document.getElementById("tikaTitle").value=""; document.getElementById("tikaPlace").value=""; document.getElementById("tikaMsg").value="";
+  setTimeout(closeTikaAdmin, 1000);
+}
+function renderTikaList(){
+  let box = document.getElementById("tikaList");
+  if(!tikaNotices.length){ box.innerHTML='<p style="color:#666;font-size:13px;margin:8px 0 0">এখনো কোনো টিকা নোটিশ আসে নাই।</p>'; document.getElementById("tikaCount").textContent="0 টা নোটিশ"; return; }
+  document.getElementById("tikaCount").textContent = tikaNotices.length + " টা নোটিশ";
+  let h="";
+  tikaNotices.slice().reverse().forEach(n=>{ h += '<div class="tikaItem"><b style="color:#d32f2f">💉 '+n.title+'</b><br><small>📅 '+n.date+' | 📍 '+n.place+'</small><br><div style="margin-top:6px;font-size:14px">'+n.msg+'</div></div>'; });
+  box.innerHTML=h;
+}
+function renderTikaAdminList(){
+  let h="";
+  tikaNotices.slice().reverse().forEach(n=>{ h += '<div style="display:flex;gap:8px;align-items:center;border-bottom:1px solid #eee;padding:10px 0"><div style="flex:1"><b>'+n.title+'</b><br><small>'+n.place+'</small></div><button onclick="deleteTika(\''+n.fbId+'\')" style="border:0;background:#ffebee;color:#d32f2f;padding:8px 12px;border-radius:10px;font-weight:800">🗑️ ডিলিট</button></div>'; });
+  document.getElementById("tikaAdminList").innerHTML = h || "কোনো নোটিশ নাই";
+}
+async function deleteTika(id){
+  if(document.getElementById("tikaPin").value !== TIKA_PIN){ alert("ডিলিট করতে পিন লাগবো ভাই!"); return; }
+  if(!confirm("এই নোটিশ ডিলিট করবেন?")) return;
+  await db.ref("tikaNotices/"+id).remove();
+}
+db.ref("tikaNotices").on("value",(snap)=>{
+  const val=snap.val(); tikaNotices=[];
+  if(val){ Object.keys(val).forEach(k=>{ tikaNotices.push({...val[k], fbId:k}); }); }
+  renderTikaList(); renderTikaAdminList();
+  if(tikaNotices.length>0){ let dot=document.getElementById("notifDot"); if(dot){ dot.textContent = tikaNotices.length; dot.style.display="grid"; } }
+});
+// হোম পেজে টিকা বক্সটা উপরে নিয়ে যাওয়া
+setTimeout(()=>{ let box=document.getElementById("tikaHomeBox"); let cat=document.getElementById("catBox"); if(box && cat && box.parentNode!==cat.parentNode){} if(box && cat){ cat.parentNode.insertBefore(box, cat); } }, 500);
 </script></body></html>
