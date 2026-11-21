@@ -159,6 +159,22 @@ setTimeout(()=>{let box=document.querySelector(".tikaBox");let cat=document.getE
 <div id="haranoSheet" style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:none;align-items:flex-end"><div style="background:#fff;width:100%;max-height:90vh;border-radius:20px 20px 0 0;padding:18px;overflow:auto"><div style="display:flex;justify-content:space-between"><b>🚨 কি হারাইছে?</b><button onclick="closeHarano()" style="border:0;background:#eef2ff;width:30px;height:30px;border-radius:50%;font-weight:900">X</button></div><p style="font-size:13px;color:#666">দামি জিনিস হারাইলে / চুরি হইলে এইখানে দেন। সবাই দেখবো।</p><select id="haranoType" style="width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px"><option value="গরু">🐄 গরু হারাইছে / চুরি হইছে</option><option value="ছাগল">🐐 ছাগল হারাইছে / চুরি হইছে</option><option value="মহিষ">🐃 মহিষ হারাইছে / চুরি হইছে</option><option value="ভেড়া">🐑 ভেড়া / বেড়া হারাইছে</option><option value="গাড়ি">🚗 গাড়ি হারাইছে / চুরি হইছে</option><option value="বাইক">🏍️ বাইক / মোটরসাইকেল চুরি হইছে</option><option value="অটো / সিএনজি">🛺 অটো / সিএনজি চুরি হইছে</option><option value="টাকা">💰 টাকা হারাইছে</option><option value="মোবাইল">📱 মোবাইল হারাইছে / চুরি হইছে</option><option value="স্বর্ণ">💍 স্বর্ণ / গয়না হারাইছে</option><option value="দলিল / কাগজ">📄 দলিল / কাগজ হারাইছে</option><option value="অন্য দামি জিনিস">💎 অন্য দামি জিনিস</option></select><input id="haranoName" placeholder="👤 আপনার নাম" style="width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px"><input id="haranoPhone" placeholder="📞 আপনার ফোন - 017..." style="width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px"><input id="haranoExtra" placeholder="🚗 গাড়ির নম্বর / গাড়ির নাম / টাকার পরিমাণ - যেমন: সিলেট-গ-১১-২৩৪৫, লাল গরু" style="width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px"><input id="haranoPlace" placeholder="📍 কোথায় হারাইছে - যেমন: চরখাই বাজার" style="width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px"><textarea id="haranoMsg" placeholder="✍️ চিনার উপায় লিখুন - যেমন: গাড়ির রং কালা, গরুর কপালে সাদা দাগ, কত টাকা, কোন ব্যাগে..." style="width:100%;padding:13px;border:1px solid #dbe2f5;border-radius:12px;margin-top:10px"></textarea><button onclick="sendHarano()" style="width:100%;margin-top:12px;border:0;background:#ff9800;color:#fff;border-radius:12px;padding:14px;font-weight:800">📢 সবাইরে জানাইয়া দেন</button><div id="haranoSendMsg" style="text-align:center;font-weight:800;margin-top:8px"></div></div></div>
 <script>
 let haranoNotices = [];
+  function updateHaranoExtra(){
+let t=document.getElementById("haranoType").value;
+let e=document.getElementById("haranoExtra");
+if(t==="গরু") e.placeholder="🐄 গরুর রং / দাগ - যেমন: লাল গরু, কপালে সাদা দাগ";
+else if(t==="ছাগল") e.placeholder="🐐 ছাগলের রং / দাগ - যেমন: কালা ছাগল, কানে সাদা";
+else if(t==="মহিষ") e.placeholder="🐃 মহিষের রং / দাগ";
+else if(t==="ভেড়া") e.placeholder="🐑 ভেড়ার রং / দাগ - কয়টা হারাইছে?";
+else if(t==="গাড়ি") e.placeholder="🚗 গাড়ির নম্বর / গাড়ির নাম - যেমন: সিলেট-গ-১১-২৩৪৫";
+else if(t==="বাইক") e.placeholder="🏍️ বাইকের নম্বর / নাম - যেমন: সিলেট-ল-১১-২৩৪৫";
+else if(t==="অটো / সিএনজি") e.placeholder="🛺 গাড়ির নম্বর / রং";
+else if(t==="টাকা") e.placeholder="💰 কত টাকা হারাইছে? - যেমন: ৫০,০০০ টাকা";
+else if(t==="মোবাইল") e.placeholder="📱 মোবাইলের নাম / মডেল - যেমন: Samsung, Vivo";
+else if(t==="স্বর্ণ") e.placeholder="💍 কি গয়না? - যেমন: ২ ভরি চেইন";
+else if(t==="দলিল / কাগজ") e.placeholder="📄 কার নামে দলিল?";
+else e.placeholder="💎 জিনিসের নাম / বিবরণ";
+  }
 function openHarano(){document.getElementById("haranoSheet").style.display="flex";document.getElementById("haranoSendMsg").textContent="";}
 function closeHarano(){document.getElementById("haranoSheet").style.display="none";}
 async function sendHarano(){
